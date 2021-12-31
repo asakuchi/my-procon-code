@@ -5,7 +5,7 @@ use proconio::input;
 fn main() {
     input! {
         n: usize, // numbers の要素数
-        numbers: [usize;n],
+        numbers: [u64;n],
     }
 
     let mut max = 0;
