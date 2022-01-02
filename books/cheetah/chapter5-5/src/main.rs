@@ -10,24 +10,19 @@ fn main() {
 
     let mut list = vec![vec![false; n]; n];
 
-    for i in 0..n {
-        for j in 0..n {
-            let line = &s[i];
-            let value = line.chars().nth(j).unwrap();
-
+    for (i, line) in s.iter().enumerate() {
+        for (j, value) in line.chars().enumerate() {
             if value == 'Y' {
                 list[i][j] = true;
 
                 // 友人の友人 を探す
                 let friends_friends = &s[j];
 
-                for k in 0..n {
+                for (k, value) in friends_friends.chars().enumerate() {
                     if i == k {
                         // 自分自身
                         continue;
                     }
-
-                    let value = friends_friends.chars().nth(k).unwrap();
 
                     if value == 'Y' {
                         list[i][k] = true;
@@ -39,11 +34,11 @@ fn main() {
 
     let mut counter = std::collections::HashMap::new();
 
-    for i in 0..n {
-        for j in 0..n {
+    for (i, line) in list.iter().enumerate() {
+        for &value in line {
             counter.entry(i).or_insert(0);
 
-            if list[i][j] {
+            if value {
                 let count = counter.entry(i).or_insert(0);
                 *count += 1;
             }
