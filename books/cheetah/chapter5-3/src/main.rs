@@ -2,7 +2,41 @@
 
 use proconio::input;
 
+///
+/// 解説見た後のコード
+///
 fn main() {
+    input! {
+        base: usize,
+    }
+
+    let mut list = Vec::new();
+
+    'outer: for n in 2..base {
+        for hundreds in 0..base {
+            for tens in 0..base {
+                for ones in 0..base {
+                    if (hundreds * base.pow(2) + tens * base.pow(1) + ones * base.pow(0)) % n == 0
+                        && (hundreds + tens + ones) % n != 0
+                    {
+                        // n の倍数 だが、各桁の和がnの倍数でないなら除外
+                        continue 'outer;
+                    }
+                }
+            }
+        }
+
+        list.push(n);
+    }
+
+    println!("{:?}", list);
+}
+
+///
+/// 解説見る前のコード
+///
+#[allow(dead_code)]
+fn main_ver1() {
     input! {
         base: usize,
     }
