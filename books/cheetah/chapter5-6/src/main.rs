@@ -21,7 +21,6 @@ fn main() {
 
     let initial_x = 50;
     let initial_y = 50;
-    memo[initial_x][initial_y] = true;
     let probability = dfs(n, initial_x, initial_y, east, west, south, north, &mut memo);
 
     println!("{}", probability);
@@ -37,51 +36,35 @@ fn dfs(
     north: f64,
     memo: &mut std::vec::Vec<std::vec::Vec<bool>>,
 ) -> f64 {
+    if memo[x][y] {
+        return 0.0;
+    }
+
     if depth == 0 {
         return 1.0;
     }
 
+    memo[x][y] = true;
+
     let mut probability = 0.0;
 
     // east
-    if !memo[x + 1][y] {
-        memo[x + 1][y] = true;
-
-        let p = dfs(depth - 1, x + 1, y, east, west, south, north, memo) * east;
-        probability += p;
-
-        memo[x + 1][y] = false;
-    }
+    let p = dfs(depth - 1, x + 1, y, east, west, south, north, memo) * east;
+    probability += p;
 
     // west
-    if !memo[x - 1][y] {
-        memo[x - 1][y] = true;
-
-        let p = dfs(depth - 1, x - 1, y, east, west, south, north, memo) * west;
-        probability += p;
-
-        memo[x - 1][y] = false;
-    }
+    let p = dfs(depth - 1, x - 1, y, east, west, south, north, memo) * west;
+    probability += p;
 
     // south
-    if !memo[x][y - 1] {
-        memo[x][y - 1] = true;
-
-        let p = dfs(depth - 1, x, y - 1, east, west, south, north, memo) * south;
-        probability += p;
-
-        memo[x][y - 1] = false;
-    }
+    let p = dfs(depth - 1, x, y - 1, east, west, south, north, memo) * south;
+    probability += p;
 
     // north
-    if !memo[x][y + 1] {
-        memo[x][y + 1] = true;
+    let p = dfs(depth - 1, x, y + 1, east, west, south, north, memo) * north;
+    probability += p;
 
-        let p = dfs(depth - 1, x, y + 1, east, west, south, north, memo) * north;
-        probability += p;
-
-        memo[x][y + 1] = false;
-    }
+    memo[x][y] = false;
 
     probability
 }
