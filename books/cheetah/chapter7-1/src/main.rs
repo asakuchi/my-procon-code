@@ -1,13 +1,18 @@
 // -*- coding:utf-8-unix -*-
 
-use proconio::input;
+// use proconio::input;
 
+///
+/// 第7章 knapsack
+///
 fn main() {
-    input! {
-        n: usize,
-        weights: [usize; n],
-        prices: [usize; n],
-    }
+    // input! {
+    //     n: usize,
+    //     weights: [usize; n],
+    //     prices: [usize; n],
+    // }
+    let weights = vec![3, 4, 1, 2, 3];
+    let prices = vec![2, 3, 2, 3, 6];
 
     let weight_limit = 10;
     let mut dp = vec![vec![-1; 11]; 6];
