@@ -1,9 +1,26 @@
 // -*- coding:utf-8-unix -*-
 
 use proconio::input;
+// use proconio::derive_readable;
+// use proconio::marker::Chars;
+// use itertools::izip;
 
-// ABC086C - Traveling
-// https://atcoder.jp/contests/abs/tasks/arc089_a
+// #[derive_readable]
+// #[derive(PartialEq, Debug)]
+// struct Weight;
+
+// #[derive_readable]
+// #[derive(PartialEq, Debug)]
+// struct Cost(i32);
+
+// #[derive_readable]
+// #[derive(Debug)]
+// struct Edge {
+//     from: usize,
+//     to: proconio::marker::Usize1, // The real Edge::to has type usize.
+//     weight: Weight,
+//     cost: Cost,
+// }
 
 fn main() {
     input! {
