@@ -1,6 +1,8 @@
 // -*- coding:utf-8-unix -*-
 
 use proconio::input;
+use std::cmp::Reverse;
+use std::collections::BinaryHeap;
 
 fn main() {
     input! {
@@ -10,32 +12,31 @@ fn main() {
     }
 
     // let mut list = Vec::new();
-    let mut list = std::collections::BinaryHeap::new();
+    let mut list = BinaryHeap::new();
 
-    for (i, data) in p.iter().enumerate() {
-        if i < k - 1 {
-            list.push(data);
-            continue;
+    for &data in p.iter().take(k) {
+        list.push(Reverse(data));
+    }
+
+    // println!("a_list:{:?}", list);
+    println!("{}", list.peek().unwrap().0);
+
+    for i in k..n {
+        // println!("i:{} k:{} n:{}", i, k, n);
+
+        let data = p[i];
+
+        let item = list.peek().unwrap();
+
+        // println!("data:{:?} item:{:?}", data, item);
+
+        if data > item.0 {
+            list.pop();
+            list.push(Reverse(data));
         }
 
-        list.push(data);
+        println!("{}", list.peek().unwrap().0);
 
-        let mut temp_list = Vec::new();
-
-        for _ in 0..k - 1 {
-            let item = list.pop();
-            temp_list.push(item.unwrap());
-        }
-
-        let k_th = list.pop();
-        temp_list.push(k_th.unwrap());
-
-        println!("{}", k_th.unwrap());
-
-        while let Some(value) = temp_list.pop() {
-            list.push(value);
-        }
-
-        // println!("{:?}", list);
+        // println!("list:{:?}", list);
     }
 }
