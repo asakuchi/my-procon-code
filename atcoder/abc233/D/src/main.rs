@@ -5,48 +5,27 @@ use proconio::input;
 fn main() {
     input! {
         n: usize,
-        k: isize,
-        a: [isize; n],
+        k: i128,
+        a: [i128; n],
     }
 
-    let answer = dfs(n, k, &a, 0, 0, false, false);
+    let mut s = vec![0; n + 1];
 
-    println!("{}", answer);
-}
-
-fn dfs(
-    n: usize,
-    k: isize,
-    a: &Vec<isize>,
-    index: usize,
-    sum: isize,
-    started: bool,
-    ended: bool,
-) -> usize {
-    if index == n || ended {
-        if sum == k {
-            return 1;
-        } else {
-            return 0;
-        }
+    for i in 0..n {
+        s[i + 1] = s[i] + a[i];
     }
+
+    let mut map = std::collections::HashMap::new();
 
     let mut answer = 0;
 
-    if started {
-        if index != n - 1 {
-            answer += dfs(n, k, a, index + 1, sum + a[index], true, false);
+    for i in 0..n + 1 {
+        if let Some(value) = map.get(&(s[i])) {
+            answer += value;
         }
-        answer += dfs(n, k, a, index + 1, sum + a[index], true, true);
-    } else {
-        answer += dfs(n, k, a, index + 1, sum, false, false);
-
-        if index != n - 1 {
-            answer += dfs(n, k, a, index + 1, sum + a[index], true, false);
-        }
-
-        answer += dfs(n, k, a, index + 1, sum + a[index], true, true);
+        let value = map.entry(s[i] + k).or_insert(0);
+        *value += 1;
     }
 
-    answer
+    println!("{}", answer);
 }
