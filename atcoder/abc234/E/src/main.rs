@@ -7,43 +7,34 @@ fn main() {
         x: u128,
     }
 
-    for num in x..std::u128::MAX {
-        let vec_num = num
-            .to_string()
-            .chars()
-            .map(|n| n.to_digit(10).unwrap())
-            .collect::<Vec<_>>();
+    let mut tousa_su_set = std::collections::HashSet::new();
 
-        if is_tousa(vec_num) {
-            println!("{}", num);
+    for first in 1..=9 {
+        for digit in -9..=8 {
+            let mut text = String::from("");
+
+            let mut number = first;
+
+            for _ in 0..18 {
+                text.push_str(&number.to_string());
+
+                tousa_su_set.insert(text.parse::<u128>().unwrap());
+
+                number += digit;
+                if number < 0 || number > 9 {
+                    break;
+                }
+            }
+        }
+    }
+
+    let mut tousa_su_list = tousa_su_set.iter().collect::<Vec<&u128>>();
+    tousa_su_list.sort();
+
+    for &number in tousa_su_list {
+        if number >= x {
+            println!("{}", number);
             break;
         }
     }
-
-    // println!("{}", if yes { "Yes" } else { "No" });
-}
-
-fn is_tousa(num: Vec<u32>) -> bool {
-    if num.len() < 2 {
-        return true;
-    }
-
-    let mut answer = true;
-
-    let mut prev = num[0];
-    let prev_diff = num[1] as i32 - num[0] as i32;
-
-    for &n in num.iter().skip(1) {
-        let diff = n as i32 - prev as i32;
-
-        // println!("n:{} diff:{} prev_diff:{}", n, diff, prev_diff);
-
-        if prev_diff != diff {
-            answer = false;
-        }
-
-        prev = n;
-    }
-
-    answer
 }
