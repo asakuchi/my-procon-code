@@ -3,6 +3,7 @@
 use proconio::input;
 
 const MAX_N: usize = 15;
+const INF: i32 = 1_000 * 20; // 十分大きい数
 
 ///
 /// ビットDP
@@ -11,7 +12,16 @@ const MAX_N: usize = 15;
 fn main() {
     input! {
         n: usize,
-        d: [[i32; n]; n],
+        mut d: [[i32; n]; n],
+    }
+
+    // 入力値を修正
+    for i in 0..n {
+        for j in 0..n {
+            if d[i][j] == -1 {
+                d[i][j] = INF;
+            }
+        }
     }
 
     let mut dp = vec![vec![-1; MAX_N]; 1 << MAX_N];
@@ -45,7 +55,7 @@ fn rec(visited: usize, current: usize, n: usize, d: &Vec<Vec<i32>>, dp: &mut Vec
         return 0;
     }
 
-    let mut result = std::i32::MAX - 100;
+    let mut result = INF;
 
     for u in 0..n {
         // println!("next :{} {} {}", visited, visited >> u, visited >> u & 1);
