@@ -1,22 +1,23 @@
 // -*- coding:utf-8-unix -*-
 
 use proconio::input;
-// use proconio::derive_readable;
-// use proconio::marker::Chars;
-// use itertools::izip;
-// use itertools::Itertools;
+use superslice::*;
 
 fn main() {
     input! {
         n: usize,
-        m: usize,
-        a: [usize; n],
-        p: [[usize; m]; n],
-        mut plan: [(usize, usize); n],
-        s: String,
-
+        q: usize,
+        mut a: [usize; n],
+        x: [usize; q],
     }
 
-    // println!("{}", if yes { "Yes" } else { "No" });
-    // println!("{}", yes);
+    a.sort();
+
+    for question in x {
+        let index = a.lower_bound(&question);
+
+        let answer = n - index;
+
+        println!("{}", answer);
+    }
 }
