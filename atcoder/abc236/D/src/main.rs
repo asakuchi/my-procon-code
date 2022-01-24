@@ -16,55 +16,62 @@ fn main() {
         }
     }
 
-    let mut pairs = Vec::new();
-    let mut selected = vec![false; 2 * n];
-
-    let result = rec(&a, n, &mut pairs, &mut selected);
-
-    println!("{}", result);
+    MyStruct { n, a }.main();
 }
-fn rec(
-    a: &Vec<Vec<usize>>,
+
+struct MyStruct {
     n: usize,
-    pairs: &mut Vec<(usize, usize)>,
-    selected: &mut Vec<bool>,
-) -> usize {
-    if pairs.len() == n {
+    a: Vec<Vec<usize>>,
+}
+
+impl MyStruct {
+    fn main(&mut self) {
+        let mut pairs = Vec::new();
+        let mut selected = vec![false; 2 * self.n];
+
+        let result = self.dfs(&mut pairs, &mut selected);
+
+        println!("{}", result);
+    }
+
+    fn dfs(&mut self, pairs: &mut Vec<(usize, usize)>, selected: &mut Vec<bool>) -> usize {
+        if pairs.len() == self.n {
+            let mut result = 0;
+
+            for (first, second) in pairs {
+                result ^= self.a[*first][*second];
+            }
+
+            return result;
+        }
+
+        let mut first = 10000;
+
+        for i in 0..2 * self.n {
+            if !selected[i] {
+                first = i;
+                break;
+            }
+        }
+
+        selected[first] = true;
+
         let mut result = 0;
 
-        for (first, second) in pairs {
-            result ^= a[*first][*second];
+        for i in 0..2 * self.n {
+            if !selected[i] {
+                pairs.push((first, i));
+                selected[i] = true;
+
+                result = std::cmp::max(result, self.dfs(pairs, selected));
+
+                pairs.pop();
+                selected[i] = false;
+            }
         }
 
-        return result;
+        selected[first] = false;
+
+        result
     }
-
-    let mut first = 10000;
-
-    for i in 0..2 * n {
-        if !selected[i] {
-            first = i;
-            break;
-        }
-    }
-
-    selected[first] = true;
-
-    let mut result = 0;
-
-    for i in 0..2 * n {
-        if !selected[i] {
-            pairs.push((first, i));
-            selected[i] = true;
-
-            result = std::cmp::max(result, rec(a, n, pairs, selected));
-
-            pairs.pop();
-            selected[i] = false;
-        }
-    }
-
-    selected[first] = false;
-
-    result
 }
