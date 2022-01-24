@@ -17,7 +17,7 @@ fn main() {
 
     let mut map = std::collections::HashMap::new();
 
-    let mut answer = 0;
+    let mut answer: i128 = 0;
 
     for i in 0..n + 1 {
         if let Some(value) = map.get(&(s[i])) {
