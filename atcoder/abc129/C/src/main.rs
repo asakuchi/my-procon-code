@@ -13,19 +13,21 @@ fn main() {
 
     let mut p = vec![0 as u128; n + 1];
 
+    let mut broken = vec![false; n + 1];
+
+    for value in a {
+        broken[value] = true;
+    }
+
     p[0] = 1;
 
-    if !a.contains(&1) {
+    if !broken[1] {
         p[1] = 1;
     }
 
     for i in 2..=n {
-        if a.contains(&i) {
+        if broken[i] {
             continue;
-        }
-
-        if p[i - 1] == 0 && p[i - 2] == 0 {
-            break;
         }
 
         p[i] = (p[i - 1] + p[i - 2]) % 1_000_000_007;
