@@ -2,36 +2,27 @@
 
 use proconio::fastout;
 use proconio::input;
-// use proconio::derive_readable;
 use proconio::marker::Chars;
-// use itertools::izip;
-// use itertools::Itertools;
 
 #[fastout]
 fn main() {
     input! {
-        _n: usize,
+        n: usize,
         s: Chars,
     }
 
-    let mut list = vec![0];
+    let mut list = std::collections::VecDeque::new();
+    list.push_back(n);
 
-    let mut prev = 0;
-
-    for (i, &c) in s.iter().enumerate() {
+    for (i, &c) in s.iter().enumerate().rev() {
         if c == 'L' {
-            list.insert(prev, i + 1);
-
-            prev = prev;
+            list.push_back(i);
         } else {
-            list.insert(prev + 1, i + 1);
-
-            prev = prev + 1;
+            list.push_front(i);
         }
     }
 
     let result: Vec<_> = list.iter().map(|x| x.to_string()).collect();
 
-    // println!("{}", if yes { "Yes" } else { "No" });
     println!("{}", result.join(" "));
 }
