@@ -1,5 +1,3 @@
-// -*- coding:utf-8-unix -*-
-
 use proconio::fastout;
 use proconio::input;
 // use proconio::derive_readable;
