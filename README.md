@@ -28,3 +28,50 @@ target を共有しているので解く前にバイナリを削除する。
 cargo clean -p procon
 cargo test
 ```
+
+## crate memo
+
+### itertools;
+
+https://docs.rs/itertools/0.9.0/itertools/index.html
+
+```rust
+
+//
+// permutations 順列
+// combinations 組み合わせ
+// combinations_with_replacement 重複組み合わせ
+//
+use itertools::Itertools;
+
+
+for permutation in (0..3).permutations(2) {
+    println!("{:?}", permutation);
+}
+
+for combination in (0..3).combinations(2) {
+    println!("{:?}", combination);
+}
+
+// 要素3つ以上のzip
+use itertools::izip;
+
+let number_list = [1, 2, 3, 4, 5];
+let text_list = ["hello", "world"];
+let char_list = ['a', 'b', 'c'];
+
+for (&number_value, &text_value, &char_value) in
+    izip!(number_list.iter(), text_list.iter(), char_list.iter())
+{
+    println!("{} {} {}", number_value, text_value, char_value);
+}
+```
+
+## superslice
+
+```rust
+use superslice::*;
+
+// lower_bound
+// upper_bound
+```
