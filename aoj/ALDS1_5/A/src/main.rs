@@ -14,7 +14,7 @@ fn main() {
     stdin.read_line(&mut buf).unwrap();
     buf = buf.trim_end().to_owned();
 
-    let a: Vec<_> = buf.split_whitespace().map(|x| x.parse().unwrap()).collect();
+    let a: Vec<usize> = buf.split_whitespace().map(|x| x.parse().unwrap()).collect();
 
     let mut buf = String::new();
     stdin.read_line(&mut buf).unwrap();
@@ -26,24 +26,19 @@ fn main() {
     stdin.read_line(&mut buf).unwrap();
     buf = buf.trim_end().to_owned();
 
-    let m: Vec<_> = buf.split_whitespace().map(|x| x.parse().unwrap()).collect();
+    let m: Vec<usize> = buf.split_whitespace().map(|x| x.parse().unwrap()).collect();
 
     // ------------------------------------
 
-    for value in m {
-        let result = rec(&a, n, 0, value);
-        println!("{}", if result { "yes" } else { "no" });
-    }
-}
+    let mut result = vec![false; 2001]; // 1 <= mi <= 2000
 
-fn rec(a: &Vec<isize>, n: usize, i: usize, m: isize) -> bool {
-    if m == 0 {
-        return true;
+    for bit in 0..(1 << n) {
+        let sum = (0..n).fold(0, |sum, i| sum + if bit & (1 << i) > 0 { a[i] } else { 0 });
+
+        result[sum] = true;
     }
 
-    if i == n {
-        return false;
+    for mi in m {
+        println!("{}", if result[mi] { "yes" } else { "no" });
     }
-
-    rec(a, n, i + 1, m) || rec(a, n, i + 1, m - a[i])
 }
