@@ -25,23 +25,7 @@ fn main() {
         counter[p - 1] += x;
     }
 
-    let mut visited = vec![false; n];
-
-    let mut stack = Vec::new();
-    stack.push(0);
-    visited[0] = true;
-
-    while let Some(current) = stack.pop() {
-        for &child in edges[current].iter() {
-            if visited[child] {
-                continue;
-            }
-
-            visited[child] = true;
-            counter[child] += counter[current];
-            stack.push(child);
-        }
-    }
+    rec(&edges, &mut counter, 0, 0);
 
     for i in 0..n {
         if i != 0 {
@@ -52,11 +36,11 @@ fn main() {
     println!();
 }
 
-// fn rec(edges: &Vec<Vec<usize>>, counter: &mut Vec<u128>, current: usize, parrent: usize) {
-//     for &child in edges[current].iter() {
-//         if child != parrent {
-//             counter[child] += counter[current];
-//             rec(edges, counter, child, current);
-//         }
-//     }
-// }
+fn rec(edges: &Vec<Vec<usize>>, counter: &mut Vec<u128>, current: usize, parrent: usize) {
+    for &child in edges[current].iter() {
+        if child != parrent {
+            counter[child] += counter[current];
+            rec(edges, counter, child, current);
+        }
+    }
+}
