@@ -1,17 +1,15 @@
+use petgraph::unionfind::UnionFind;
 use proconio::fastout;
 use proconio::input;
-
-use petgraph::unionfind::UnionFind;
+use proconio::marker::Usize1;
 
 #[fastout]
 fn main() {
     input! {
         n: usize,
         m: usize,
-        mut ab_org: [(usize, usize); m],
+        ab: [(Usize1, Usize1); m],
     }
-
-    let ab: Vec<_> = ab_org.into_iter().map(|(a, b)| (a - 1, b - 1)).collect();
 
     let mut result = 0;
 
