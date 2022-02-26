@@ -1,3 +1,12 @@
+#[derive(Copy, Clone, Debug)]
+enum Cell {
+    /// 未踏
+    Unexplored,
+    Step(usize),
+    /// 通行不可
+    Unavailable,
+}
+
 fn main() {
     let move_row = vec![1, -1, 1, -1];
     let move_col = vec![-1, 1, -1, 1];
