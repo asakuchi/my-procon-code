@@ -1,9 +1,11 @@
-use proconio::fastout;
-use proconio::input;
+//!
+//! AOJ では自作コードを使う
+//!
+
 use std::cmp::Ordering;
 use std::cmp::Reverse;
 use std::collections::BinaryHeap;
-use std::io;
+// use std::io;
 
 const INF: usize = 100_100_100_1;
 
@@ -34,7 +36,7 @@ impl std::cmp::PartialOrd for Vertex {
 fn main() {
     // 入力値
     let v = 4; // 頂点の数
-    let e = 5; // 辺の数
+    let _e = 5; // 辺の数
     let r = 0; // 始点
     let s_t_d = vec![(0, 1, 1), (0, 2, 4), (1, 2, 2), (2, 3, 1), (1, 3, 5)];
 
