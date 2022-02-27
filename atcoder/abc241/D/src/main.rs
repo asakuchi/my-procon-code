@@ -7,9 +7,9 @@ fn main() {
         q: usize,
     }
 
-    let mut hash = std::collections::BTreeMap::new();
+    let mut set = std::collections::BTreeSet::new();
 
-    for _ in 0..q {
+    for i in 0..q {
         input! {
             c:usize
         }
@@ -20,7 +20,7 @@ fn main() {
                     x :usize,
                 }
 
-                *hash.entry(x).or_insert(0) += 1;
+                set.insert((x, i));
             }
             2 => {
                 // 大きい方から
@@ -29,18 +29,14 @@ fn main() {
                     mut k :usize,
                 }
 
-                let mut result = -1;
-
-                'search: for (&key, &value) in hash.range(..=x).rev() {
-                    if k <= value {
-                        result = key as isize;
-                        break 'search;
-                    } else {
-                        k -= value;
+                match set.range(..=(x, q)).rev().nth(k - 1) {
+                    Some(&value) => {
+                        println!("{}", value.0);
+                    }
+                    None => {
+                        println!("{}", -1);
                     }
                 }
-
-                println!("{}", result);
             }
             _ => {
                 // 小さい方から
@@ -49,18 +45,14 @@ fn main() {
                     mut k :usize,
                 }
 
-                let mut result = -1;
-
-                'search2: for (&key, &value) in hash.range(x..) {
-                    if k <= value {
-                        result = key as isize;
-                        break 'search2;
-                    } else {
-                        k -= value;
+                match set.range((x, 0)..).nth(k - 1) {
+                    Some(&value) => {
+                        println!("{}", value.0);
+                    }
+                    None => {
+                        println!("{}", -1);
                     }
                 }
-
-                println!("{}", result);
             }
         }
     }
