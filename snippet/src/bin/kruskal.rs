@@ -1,5 +1,9 @@
-use proconio::fastout;
-use proconio::input;
+//!
+//! AOJ では自作コードを使う
+//!
+
+// use proconio::fastout;
+// use proconio::input;
 // use proconio::derive_readable;
 // use proconio::marker::Chars;
 // use itertools::izip;
@@ -69,13 +73,28 @@ impl DisjointSet {
 /// クラスカルのアルゴリズム
 /// Kruskal's Algorithm
 ///
-#[fastout]
+// #[fastout]
 fn main() {
-    input! {
-        v: usize, // 頂点数
-        e: usize, // 辺の数
-        mut s_t_w: [(usize, usize, usize); e], // 辺が結ぶ2点の頂点と重み
-    }
+    // input! {
+    //     v: usize, // 頂点数
+    //     e: usize, // 辺の数
+    //     mut s_t_w: [(usize, usize, usize); e], // 辺が結ぶ2点の頂点と重み
+    // }
+
+    let v = 6;
+    let e = 9;
+
+    let mut s_t_w = vec![
+        (0, 1, 1),
+        (0, 2, 3),
+        (1, 2, 1),
+        (1, 3, 7),
+        (2, 4, 1),
+        (1, 4, 3),
+        (3, 4, 1),
+        (3, 5, 1),
+        (4, 5, 6),
+    ];
 
     // ------------------------------------
 
