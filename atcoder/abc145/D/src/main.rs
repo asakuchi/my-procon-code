@@ -1,58 +1,38 @@
-const MAX_SIZE: usize = 510000;
+use proconio::fastout;
+use proconio::input;
+
+const MAX_SIZE: usize = 1_000_000;
 const MODULO: isize = 1_000_000_007;
 
+#[fastout]
 fn main() {
+    input! {
+        x: usize,
+        y: usize,
+    }
+
     let mut fac = vec![0; MAX_SIZE];
     let mut finv = vec![0; MAX_SIZE];
 
-    let n = 4;
-    let k = 2;
-
-    // nCk
     combination_init(&mut fac, &mut finv);
-    println!("{}", combination(n, k, &fac, &finv));
-}
 
-///
-/// 負の数にも対応した % 演算
-///
-fn modulo(value: isize, m: isize) -> isize {
-    let mut result = value % m;
+    for a in 0..=x {
+        let b = x - a;
 
-    if result < 0 {
-        result += m;
+        if b % 2 == 1 {
+            continue;
+        }
+
+        let b = b / 2;
+
+        if 2 * a + b == y {
+            let count = combination((a + b) as isize, a as isize, &fac, &finv);
+            println!("{}", count);
+            return;
+        }
     }
 
-    result
-}
-
-// fn mod_inverse(a: isize, m: isize) -> isize {
-//     let extgcd = isize::extended_gcd(&a, &m);
-
-//     (m + extgcd.x % m) % m
-// }
-
-fn mod_inverse(a: isize, m: isize) -> isize {
-    let mut a = a;
-    let mut b = m;
-    let mut u = 1;
-    let mut v = 0;
-
-    while b > 0 {
-        let t = a / b;
-        a -= t * b;
-        std::mem::swap(&mut a, &mut b);
-        u -= t * v;
-        std::mem::swap(&mut u, &mut v);
-    }
-
-    u %= m;
-
-    if u < 0 {
-        u += m;
-    }
-
-    u
+    println!("0");
 }
 
 fn combination_init(fac: &mut Vec<isize>, finv: &mut Vec<isize>) {
