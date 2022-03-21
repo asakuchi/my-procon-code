@@ -1,0 +1,10 @@
+A
+B
+C
+D
+E
+? E D
+? D C
+? C B
+? B A
+! ABCDE
