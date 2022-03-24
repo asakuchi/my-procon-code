@@ -7,6 +7,21 @@ fn main() {
 
     let primes = get_prime(MAX_NUM);
     println!("{}", primes.len());
+
+    // is_prime で作ったリストと get_prime の比較
+    let mut primes_2 = Vec::with_capacity(MAX_NUM);
+
+    for i in 2..=MAX_NUM {
+        if is_prime(i) {
+            primes_2.push(i);
+        }
+    }
+
+    assert_eq!(primes, primes_2);
+
+    let factors = prime_factorize(207_900);
+
+    println!("{:?}", factors);
 }
 
 ///
@@ -23,7 +38,7 @@ fn is_prime(x: usize) -> bool {
 
     let mut i = 3;
 
-    while i as f64 <= (x as f64).sqrt() {
+    while i * i <= x {
         if x % i == 0 {
             return false;
         }
@@ -40,7 +55,7 @@ fn is_prime(x: usize) -> bool {
 /// 1_000_000 10^6 はすぐに帰ってくる
 /// 10_000_000 10^7 は少し時間かかる
 ///
-pub fn get_prime(n: usize) -> Vec<usize> {
+fn get_prime(n: usize) -> Vec<usize> {
     assert!(n >= 2, "n must be 2 or more");
 
     let mut is_prime = vec![true; n + 1];
@@ -56,6 +71,38 @@ pub fn get_prime(n: usize) -> Vec<usize> {
             for j in (i * 2..=n).step_by(i) {
                 is_prime[j] = false;
             }
+        }
+    }
+
+    list
+}
+
+///
+/// 素因数分解
+///
+fn prime_factorize(n: usize) -> Vec<usize> {
+    let mut current = n;
+
+    let mut list = Vec::new();
+
+    {
+        let mut i = 2;
+
+        while i * i <= n {
+            while current % i == 0 {
+                list.push(i);
+                current /= i;
+            }
+
+            if current == 1 {
+                break;
+            }
+
+            i += 1;
+        }
+
+        if current != 1 {
+            list.push(current);
         }
     }
 

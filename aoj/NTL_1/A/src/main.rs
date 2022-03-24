@@ -21,8 +21,10 @@ fn main() {
 
     let mut current = n;
 
-    for i in 2..=n {
-        if is_prime(i) {
+    {
+        let mut i = 2;
+
+        while i * i <= n {
             while current % i == 0 {
                 print!(" {}", i);
                 current /= i;
@@ -31,6 +33,12 @@ fn main() {
             if current == 1 {
                 break;
             }
+
+            i += 1;
+        }
+
+        if current != 1 {
+            print!(" {}", current);
         }
     }
 
@@ -48,7 +56,7 @@ fn is_prime(x: usize) -> bool {
 
     let mut i = 3;
 
-    while i as f64 <= (x as f64).sqrt() {
+    while i * i <= x {
         if x % i == 0 {
             return false;
         }
