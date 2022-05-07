@@ -1,6 +1,7 @@
 use proconio::fastout;
 use proconio::input;
 use proconio::marker::Chars;
+use std::mem;
 
 #[fastout]
 fn main() {
@@ -12,8 +13,6 @@ fn main() {
 
     let mut first = s[0..n].to_vec();
     let mut second = s[n..2 * n].to_vec();
-
-    let mut reversed = false;
 
     for _ in 0..q {
         input! {
@@ -27,42 +26,16 @@ fn main() {
                 let a = a - 1;
                 let b = b - 1;
 
-                let (a, b) = if reversed {
-                    ((a + n) % (2 * n), (b + n) % (2 * n))
-                } else {
-                    (a, b)
-                };
-
                 if b < n {
-                    if a < n {
-                        let tmp = first[a];
-                        first[a] = first[b];
-                        first[b] = tmp;
-                    } else {
-                        let a = a - n;
-
-                        let tmp = second[a];
-                        second[a] = first[b];
-                        first[b] = tmp;
-                    }
+                    first.swap(a, b);
+                } else if a >= n {
+                    second.swap(a - n, b - n);
                 } else {
-                    let b = b - n;
-
-                    if a < n {
-                        let tmp = first[a];
-                        first[a] = second[b];
-                        second[b] = tmp;
-                    } else {
-                        let a = a - n;
-
-                        let tmp = second[a];
-                        second[a] = second[b];
-                        second[b] = tmp;
-                    }
+                    mem::swap(&mut first[a], &mut second[b - n]);
                 }
             }
             _ => {
-                reversed = !reversed;
+                mem::swap(&mut first, &mut second);
             }
         }
     }
@@ -70,9 +43,5 @@ fn main() {
     let first_text: String = first.iter().collect();
     let second_text: String = second.iter().collect();
 
-    if reversed {
-        println!("{}{}", second_text, first_text);
-    } else {
-        println!("{}{}", first_text, second_text);
-    }
+    println!("{}{}", first_text, second_text);
 }
