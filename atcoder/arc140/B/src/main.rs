@@ -13,7 +13,7 @@ fn main() {
 
     let mut mode = 0;
 
-    let mut a_count = 0;
+    let mut a_count: usize = 0;
     let mut c_count = 0;
 
     for c in s {
@@ -64,7 +64,51 @@ fn main() {
         }
     }
 
-    let sum: usize = list.iter().sum();
+    let mut result: usize = 0;
 
-    println!("{}", sum.min(2 * list.len()));
+    let mut map = std::collections::BTreeMap::new();
+
+    for num in list {
+        *map.entry(num).or_insert(0) += 1;
+    }
+
+    loop {
+        match map.keys().next_back() {
+            Some(&max_value) => {
+                result += 1;
+
+                let count = map.entry(max_value).or_insert(0);
+                *count -= 1;
+
+                if *count == 0 {
+                    map.remove(&max_value);
+                }
+
+                if max_value > 1 {
+                    *map.entry(max_value - 1).or_insert(0) += 1;
+                }
+            }
+            None => {
+                break;
+            }
+        }
+
+        match map.keys().next() {
+            Some(&min_value) => {
+                result += 1;
+
+                let count = map.entry(min_value).or_insert(0);
+                *count -= 1;
+
+                if *count == 0 {
+                    map.remove(&min_value);
+                }
+            }
+            None => {
+                break;
+            }
+        }
+    }
+
+    println!("{}", result);
 }
