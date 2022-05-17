@@ -1,15 +1,5 @@
-use proconio::fastout;
-use proconio::input;
-
-#[fastout]
 fn main() {
-    input! {
-        l: usize,
-    }
-
-    let n = l - 1;
-
-    println!("{}", combination(n, 11));
+    println!("{}", combination(10, 2));
 }
 
 fn combination(n: usize, k: usize) -> usize {
