@@ -7,7 +7,7 @@ use std::cmp::Reverse;
 use std::collections::BinaryHeap;
 // use std::io;
 
-const INF: usize = 100_100_100_1;
+const INF: usize = 1_100_100_100_100_100_101;
 
 #[derive(Debug, Eq, PartialEq)]
 struct Vertex {
@@ -29,6 +29,11 @@ impl std::cmp::PartialOrd for Vertex {
     }
 }
 
+enum Directed {
+    Directed,
+    Undirected,
+}
+
 ///
 /// 単一始点最短経路
 /// ダイクストラ
@@ -39,7 +44,7 @@ fn main() {
     let _e = 5; // 辺の数
     let r = 0; // 始点
     let s_t_d = vec![(0, 1, 1), (0, 2, 4), (1, 2, 2), (2, 3, 1), (1, 3, 5)];
-
+    let direction = Directed::Directed;
     /* --------------------------------------------------- */
 
     // ある頂点からの辺と重み
@@ -47,6 +52,10 @@ fn main() {
 
     for (s, t, d) in &s_t_d {
         edge[*s].push((*t, *d));
+
+        if let direction = Directed::Undirected {
+            edge[*t].push((*s, *d));
+        }
     }
 
     // 始点から各頂点までの最短コスト
