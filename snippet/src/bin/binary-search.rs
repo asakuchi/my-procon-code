@@ -1,21 +1,18 @@
 fn main() {
-    let mut high = 10u128.pow(9) + 1;
-    let mut low = 0;
-    let mut mid;
+    let mut ok: isize = 1 << 60;
+    let mut ng = -1;
 
-    loop {
-        mid = (high + low) / 2;
+    while (ok - ng).abs() > 1 {
+        let mid = (ok + ng) / 2;
 
-        if mid == low {
-            break;
-        }
+        let solve = || true;
 
-        if some_condition {
-            low = mid;
+        if solve() {
+            ok = mid;
         } else {
-            high = mid;
+            ng = mid;
         }
     }
 
-    println!("{}", mid);
+    println!("{}", ok);
 }
