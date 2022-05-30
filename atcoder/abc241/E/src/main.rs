@@ -1,7 +1,5 @@
-use proconio::fastout;
 use proconio::input;
 
-#[fastout]
 fn main() {
     input! {
         n: usize,
@@ -9,49 +7,44 @@ fn main() {
         a: [usize; n],
     }
 
-    let mut x: usize = 0;
+    let mut amount = 0;
 
-    let mut first_index = vec![-1; n];
+    let mut map = std::collections::HashMap::new();
 
-    let mut loop_size = n;
+    let mut list = Vec::new();
 
-    for index in 1..n + 1 {
-        let x_mod_n = x % n;
-        x += a[x_mod_n];
+    let mut amount_per_loop = 0;
+
+    for _ in 0..k {
+        let index = amount % n;
+
+        let times = map.entry(index).or_insert(0);
+
+        if *times == 1 {
+            list.push(index);
+            amount_per_loop += a[index];
+        } else if *times == 2 {
+            break;
+        }
+
+        *times += 1;
+
+        amount += a[index];
         k -= 1;
 
         if k == 0 {
-            println!("{}", x);
+            println!("{}", amount);
             return;
         }
-
-        if first_index[x_mod_n] != -1 {
-            loop_size = index - first_index[x_mod_n] as usize;
-        } else {
-            first_index[x_mod_n] = index as isize;
-        }
     }
 
-    while k % loop_size != 0 {
-        k -= 1;
-        x += a[x % n];
+    amount += (k / list.len()) * amount_per_loop;
+    k = k % list.len();
+
+    for _ in 0..k {
+        let index = amount % n;
+        amount += a[index];
     }
 
-    if k == 0 {
-        println!("{}", x);
-        return;
-    }
-
-    let mut loop_count = 0;
-
-    for _ in 0..loop_size {
-        k -= 1;
-        x += a[x % n];
-
-        loop_count += a[x % n];
-    }
-
-    x += loop_count * (k / loop_size);
-
-    println!("{}", x);
+    println!("{}", amount);
 }
