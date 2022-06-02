@@ -82,11 +82,42 @@ impl Ahc011 {
             }
         }
 
-        let start_score = self.eval(&self.tiles, 0);
+        let (start_score, max_point_at_start) = self.eval(&self.tiles, 0);
+
+        let mut initial_hands = Vec::new();
+
+        // max_point_at_start まで移動させる
+        if max_point_at_start.0 > start_point.0 {
+            let diff = max_point_at_start.0 - start_point.0;
+            for _ in 0..diff {
+                initial_hands.push('D');
+                start_point.0 += 1;
+            }
+        } else if start_point.0 > max_point_at_start.0 {
+            let diff = start_point.0 - max_point_at_start.0;
+            for _ in 0..diff {
+                initial_hands.push('U');
+                start_point.0 -= 1;
+            }
+        }
+
+        if max_point_at_start.1 > start_point.1 {
+            let diff = max_point_at_start.1 - start_point.1;
+            for _ in 0..diff {
+                initial_hands.push('R');
+                start_point.1 += 1;
+            }
+        } else if start_point.1 > max_point_at_start.1 {
+            let diff = start_point.1 - max_point_at_start.1;
+            for _ in 0..diff {
+                initial_hands.push('L');
+                start_point.1 -= 1;
+            }
+        }
 
         let mut priority_queue = BinaryHeap::new();
 
-        priority_queue.push((start_score, vec![], start_point));
+        priority_queue.push((start_score, initial_hands, start_point));
 
         let mut max_score = 0;
         let mut max_hands = Vec::new();
@@ -107,7 +138,7 @@ impl Ahc011 {
                 let new_point = (x - 1, y);
 
                 let new_tiles = self.change(&new_hands);
-                let new_score = self.eval(&new_tiles, new_hands.len());
+                let (new_score, _) = self.eval(&new_tiles, new_hands.len());
 
                 // if priority_queue.len() > MAX_QUEUE_SIZE {
                 //     eprintln!("over");
@@ -131,7 +162,7 @@ impl Ahc011 {
                 let new_point = (x + 1, y);
 
                 let new_tiles = self.change(&new_hands);
-                let new_score = self.eval(&new_tiles, new_hands.len());
+                let (new_score, _) = self.eval(&new_tiles, new_hands.len());
 
                 if priority_queue.len() < MAX_QUEUE_SIZE || new_score > score {
                     // 一定サイズを越えてしまったら、スコアが改善するものだけ入れる
@@ -151,7 +182,7 @@ impl Ahc011 {
                 let new_point = (x, y - 1);
 
                 let new_tiles = self.change(&new_hands);
-                let new_score = self.eval(&new_tiles, new_hands.len());
+                let (new_score, _) = self.eval(&new_tiles, new_hands.len());
 
                 if priority_queue.len() < MAX_QUEUE_SIZE || new_score > score {
                     // 一定サイズを越えてしまったら、スコアが改善するものだけ入れる
@@ -171,7 +202,7 @@ impl Ahc011 {
                 let new_point = (x, y + 1);
 
                 let new_tiles = self.change(&new_hands);
-                let new_score = self.eval(&new_tiles, new_hands.len());
+                let (new_score, _) = self.eval(&new_tiles, new_hands.len());
 
                 if priority_queue.len() < MAX_QUEUE_SIZE || new_score > score {
                     // 一定サイズを越えてしまったら、スコアが改善するものだけ入れる
@@ -227,8 +258,9 @@ impl Ahc011 {
     ///
     /// 評価関数
     ///
-    fn eval(&self, tiles: &Vec<Vec<usize>>, hands_size: usize) -> usize {
-        let mut size = 0;
+    fn eval(&self, tiles: &Vec<Vec<usize>>, hands_size: usize) -> (usize, (usize, usize)) {
+        let mut max_size = 0;
+        let mut max_point = (0, 0);
 
         let mut queue = VecDeque::new();
         let mut visited = vec![vec![false; self.n]; self.n];
@@ -305,17 +337,22 @@ impl Ahc011 {
                     }
                 }
 
-                size = size.max(checking_size);
+                if checking_size > max_size {
+                    max_size = checking_size;
+                    max_point = (i, j);
+                }
 
                 // println!("{:?} {}", (i, j), score);
             }
         }
 
-        if size == self.n * self.n - 1 {
+        let score = if max_size == self.n * self.n - 1 {
             (500000. * (2. - hands_size as f64 / self.t as f64)).round() as usize
         } else {
-            (500000. * size as f64 / (self.n * self.n - 1) as f64).round() as usize
-        }
+            (500000. * max_size as f64 / (self.n * self.n - 1) as f64).round() as usize
+        };
+
+        (score, max_point)
     }
 
     // ///
