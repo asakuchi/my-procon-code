@@ -8,5 +8,5 @@ fn main() {
         b: f64,
     }
 
-    println!("{}",(a-b)/3.+b);
+    println!("{}", (a - b) / 3. + b);
 }
