@@ -1,5 +1,5 @@
 use proconio::input;
-use std::collections::BTreeSet;
+use std::collections::HashSet;
 
 fn main() {
     input! {
@@ -7,7 +7,7 @@ fn main() {
         mut xy: [(usize, usize); n],
     }
 
-    let mut set = BTreeSet::new();
+    let mut set = HashSet::new();
 
     for &(x, y) in &xy {
         set.insert((x, y));
@@ -23,29 +23,21 @@ fn main() {
                 continue;
             }
 
-            let (x2, y2) = xy[j];
+            let (x3, y3) = xy[j];
 
-            if y1 != y2 {
+            let (x2, y2) = (x3, y1);
+            let (x4, y4) = (x1, y3);
+
+            if (x2, y2) == (x1, y1)
+                || (x4, y4) == (x1, y1)
+                || (x2, y2) == (x3, y3)
+                || (x4, y4) == (x3, y3)
+            {
                 continue;
             }
 
-            let x3 = x2;
-            let x4 = x1;
-
-            for &(_, y3) in set.range((x3, 0)..(x3 + 1, 0)) {
-                if (x3, y3) == (x2, y2) {
-                    continue;
-                }
-
-                let y4 = y3;
-
-                if (x4, y4) == (x1, y1) {
-                    continue;
-                }
-
-                if set.contains(&(x4, y4)) {
-                    result += 1;
-                }
+            if set.contains(&(x2, y2)) && set.contains(&(x4, y4)) {
+                result += 1;
             }
         }
     }
