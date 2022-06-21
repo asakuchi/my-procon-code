@@ -13,22 +13,27 @@ fn main() {
     shop.push(d);
     shop.sort();
 
-    k.sort();
-
     let mut result = 0;
 
-    let mut i = 0;
+    for target in k {
+        let mut ok: isize = n as isize;
+        let mut ng = -1;
 
-    for j in 0..m {
-        while k[j] > shop[i + 1] {
-            i += 1;
+        while (ok - ng).abs() > 1 {
+            let mid = (ok + ng) / 2;
+
+            let solve = target < shop[mid as usize];
+
+            if solve {
+                ok = mid;
+            } else {
+                ng = mid;
+            }
         }
 
-        if k[j] - shop[i] < shop[i + 1] - k[j] {
-            result += k[j] - shop[i];
-        } else {
-            result += shop[i + 1] - k[j];
-        }
+        let score = (shop[ok as usize] - target).min(target - shop[(ok - 1) as usize]);
+
+        result += score;
     }
 
     println!("{}", result);
