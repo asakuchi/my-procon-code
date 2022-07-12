@@ -1,0 +1,9 @@
+[workspace]
+
+members = [
+    "work",
+    "abc",
+    # "aoj",
+    "snippet",
+    "atcoder-other-contests"
+]
