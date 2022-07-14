@@ -708,6 +708,52 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dcf81ac59edc17cc8697ff311e8f5ef2d99fcbd9817b34cec66f90b6c3dfd987"
 
 [[package]]
+name = "typical90"
+version = "0.1.0"
+dependencies = [
+ "alga",
+ "ascii",
+ "bitset-fixed",
+ "cli_test_dir",
+ "either",
+ "fixedbitset",
+ "getrandom",
+ "im-rc",
+ "indexmap",
+ "itertools 0.9.0",
+ "itertools-num",
+ "lazy_static",
+ "libm",
+ "maplit",
+ "nalgebra",
+ "ndarray",
+ "num",
+ "num-bigint",
+ "num-complex",
+ "num-derive",
+ "num-integer",
+ "num-iter",
+ "num-rational",
+ "num-traits",
+ "ordered-float",
+ "permutohedron",
+ "petgraph",
+ "proconio",
+ "rand",
+ "rand_chacha",
+ "rand_core",
+ "rand_distr",
+ "rand_hc",
+ "rand_pcg",
+ "regex",
+ "rustc-hash",
+ "smallvec",
+ "superslice",
+ "text_io",
+ "whiteread",
+]
+
+[[package]]
 name = "unicode-ident"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"

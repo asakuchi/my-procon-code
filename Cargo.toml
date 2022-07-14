@@ -4,6 +4,7 @@ members = [
     "work",
     "abc",
     # "aoj",
+    "typical90",
     "snippet",
     "atcoder-other-contests"
 ]
