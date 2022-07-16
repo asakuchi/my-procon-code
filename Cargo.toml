@@ -6,6 +6,7 @@ members = [
     "arc",
     "agc",
     "ahc",
+    "typical-dp",
     "aoj",
     "typical90",
     "snippet",
