@@ -11,5 +11,6 @@ members = [
     "aoj",
     "typical90",
     "snippet",
+    "books",
     "atcoder-other-contests"
 ]
