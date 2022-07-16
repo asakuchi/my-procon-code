@@ -3,7 +3,7 @@
 members = [
     "work",
     "abc",
-    # "aoj",
+    "aoj",
     "typical90",
     "snippet",
     "atcoder-other-contests"
