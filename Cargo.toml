@@ -3,6 +3,7 @@
 members = [
     "work",
     "abc",
+    "arc",
     "aoj",
     "typical90",
     "snippet",
