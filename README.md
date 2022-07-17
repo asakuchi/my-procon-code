@@ -75,3 +75,9 @@ use superslice::*;
 // lower_bound
 // upper_bound
 ```
+
+## work でプログラム書いた後、別のディレクトリにコピーする
+
+```sh
+find work -name \*.rs | awk -F'/' '{ printf "cp -pr %s abc/src/bin/abc260_%s\n", $0, $4}' | zsh
+```
