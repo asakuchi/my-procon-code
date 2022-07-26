@@ -1,42 +1,61 @@
-#[derive(Copy, Clone, Debug)]
-enum Cell {
-    /// 未踏
-    Unexplored,
-    Step(usize),
-    /// 通行不可
-    Unavailable,
-}
+use proconio::{
+    input,
+    marker::{Chars, Usize1},
+};
+use std::collections::VecDeque;
 
 fn main() {
-    let move_row = vec![1, -1, 1, -1];
-    let move_col = vec![-1, 1, -1, 1];
+    input! {
+        r: usize,
+        c: usize,
+        s: (Usize1, Usize1),
+        g: (Usize1, Usize1),
+        table: [Chars; r],
+    }
 
-    let mut queue = std::collections::VecDeque::new();
-    queue.push_back(0);
+    let patterns = vec![(1, 0), (-1, 0), (0, 1), (0, -1)];
 
-    while let Some(target) = queue.pop_front() {
-        for pattern in move_row.iter().zip(move_col.iter()) {
-            let next = (target.0 as isize + pattern.0, target.1 as isize + pattern.1);
+    let mut steps = vec![vec![0; c]; r];
 
-            // 終了条件
-            if 0 > next.0 || next.0 >= height as isize || 0 > next.1 || next.1 >= width as isize {
+    let mut visited = vec![vec![false; c]; r];
+
+    let mut queue = VecDeque::new();
+    queue.push_back(s);
+    visited[s.0][s.1] = true;
+
+    while let Some(current) = queue.pop_front() {
+        // 終了条件
+        if current == g {
+            println!("{}", steps[current.0][current.1]);
+            return;
+        }
+
+        for pattern in &patterns {
+            let next = (
+                current.0 as isize + pattern.0,
+                current.1 as isize + pattern.1,
+            );
+
+            if 0 > next.0 || next.0 >= r as isize || 0 > next.1 || next.1 >= c as isize {
                 continue;
             }
 
             let next = (next.0 as usize, next.1 as usize);
 
-            if maze[next.0].chars().nth(next.1).unwrap() == 'X' {
-                steps[next.0][next.1] = Cell::Unavailable;
+            if table[next.0][next.1] == '#' {
+                continue;
+            }
+
+            if visited[next.0][next.1] {
                 continue;
             }
 
             // 次へ
-            if let Cell::Unexplored = steps[next.0][next.1] {
-                if let Cell::Step(step) = steps[target.0][target.1] {
-                    steps[next.0][next.1] = Cell::Step(step + 1);
-                    queue.push_back(next);
-                }
-            }
+            visited[next.0][next.1] = true;
+            steps[next.0][next.1] = steps[current.0][current.1] + 1;
+            queue.push_back(next);
         }
     }
+
+    panic!("goal not found");
 }
