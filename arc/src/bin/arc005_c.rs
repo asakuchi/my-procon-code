@@ -1,6 +1,8 @@
 use proconio::{input, marker::Chars};
 use std::collections::VecDeque;
 
+const INF: usize = 1_000_000_000_000;
+
 fn main() {
     input! {
         h: usize,
@@ -10,9 +12,7 @@ fn main() {
 
     let patterns = vec![(1, 0), (-1, 0), (0, 1), (0, -1)];
 
-    let mut steps = vec![vec![0; w]; h];
-
-    let mut visited = vec![vec![false; w]; h];
+    let mut steps = vec![vec![INF; w]; h];
 
     let mut s = (1_000, 1_000);
 
@@ -27,7 +27,7 @@ fn main() {
 
     let mut queue = VecDeque::new();
     queue.push_back(s);
-    visited[s.0][s.1] = true;
+    steps[s.0][s.1] = 0;
 
     while let Some(current) = queue.pop_front() {
         // 終了条件
@@ -54,22 +54,20 @@ fn main() {
 
             let next = (next.0 as usize, next.1 as usize);
 
-            if visited[next.0][next.1] {
-                continue;
-            }
-
             // 次へ
             if table[next.0][next.1] == '#' {
-                visited[next.0][next.1] = true;
-                steps[next.0][next.1] = steps[current.0][current.1] + 1;
-                queue.push_back(next);
+                if steps[next.0][next.1] > steps[current.0][current.1] + 1 {
+                    steps[next.0][next.1] = steps[current.0][current.1] + 1;
+                    queue.push_back(next);
+                }
             } else {
-                visited[next.0][next.1] = true;
-                steps[next.0][next.1] = steps[current.0][current.1];
-                queue.push_front(next);
+                if steps[next.0][next.1] > steps[current.0][current.1] {
+                    steps[next.0][next.1] = steps[current.0][current.1];
+                    queue.push_front(next);
+                }
             }
         }
     }
 
-    panic!("goal not found");
+    panic!("not found");
 }
