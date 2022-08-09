@@ -1107,3 +1107,7 @@ dependencies = [
  "text_io",
  "whiteread",
 ]
+
+[[package]]
+name = "yukicoder"
+version = "0.1.0"

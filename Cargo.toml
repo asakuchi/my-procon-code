@@ -1,16 +1,17 @@
 [workspace]
 
 members = [
-    "work",
     "abc",
     "arc",
     "agc",
     "ahc",
     "typical-dp",
     "edpc",
-    "aoj",
     "typical90",
+    "atcoder-other-contests",
     "snippet",
+    "aoj",
+    "yukicoder",
     "books",
-    "atcoder-other-contests"
+    "work"
 ]
