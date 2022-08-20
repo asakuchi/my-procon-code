@@ -1,3 +1,7 @@
+//!
+//! 8パズルの類題
+//!
+
 use std::collections::{HashSet, VecDeque};
 
 use proconio::{input, marker::Usize1};
