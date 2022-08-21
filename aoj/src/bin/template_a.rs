@@ -1,8 +1,13 @@
-use std::io;
-
 fn main() {
-    // ------------------------------------
-    let stdin = io::stdin();
+    input_usize();
+    input_tuple();
+    input_vec_2d(10);
+    input_tuple_vec(10);
+    input_char_vec();
+}
+
+fn input_usize() -> usize {
+    let stdin = std::io::stdin();
 
     let mut buf = String::new();
     stdin.read_line(&mut buf).unwrap();
@@ -10,8 +15,11 @@ fn main() {
 
     let n: usize = buf.parse().unwrap();
 
-    // ------------------------------------
-    let stdin = io::stdin();
+    n
+}
+
+fn input_tuple() -> (usize, usize) {
+    let stdin = std::io::stdin();
 
     let mut buf = String::new();
     stdin.read_line(&mut buf).unwrap();
@@ -22,8 +30,13 @@ fn main() {
     let n: usize = iter.next().unwrap().parse().unwrap();
     let m: usize = iter.next().unwrap().parse().unwrap();
 
-    // ------------------------------------
+    (n, m)
+}
+
+fn input_vec_2d(n: usize) -> Vec<Vec<isize>> {
     // 二次元ベクタ
+
+    let stdin = std::io::stdin();
 
     let mut a: Vec<Vec<isize>> = Vec::with_capacity(n);
 
@@ -39,8 +52,13 @@ fn main() {
         a.push(line);
     }
 
-    // ------------------------------------
+    a
+}
+
+fn input_tuple_vec(n: usize) -> Vec<(usize, usize, usize)> {
     // タプルのベクタ
+
+    let stdin = std::io::stdin();
 
     let mut s_t_d: Vec<(usize, usize, usize)> = Vec::with_capacity(n);
 
@@ -58,33 +76,17 @@ fn main() {
         s_t_d.push((s, t, d));
     }
 
-    // ------------------------------------
-    // 件数不明
+    s_t_d
+}
 
-    use std::io::prelude::*;
-
-    let stdin = io::stdin();
-
-    let mut vw = Vec::with_capacity(n);
-
-    for line_result in stdin.lock().lines() {
-        let line = line_result.unwrap();
-
-        let mut iter = line.split_whitespace();
-
-        let vi: usize = iter.next().unwrap().parse().unwrap();
-        let wi: usize = iter.next().unwrap().parse().unwrap();
-
-        vw.push((vi, wi));
-    }
-
-    // ------------------------------------
+fn input_char_vec() -> Vec<char> {
+    let stdin = std::io::stdin();
 
     let mut buf = String::new();
-    io::stdin().read_line(&mut buf).unwrap();
+    stdin.read_line(&mut buf).unwrap();
     buf = buf.trim_end().to_owned();
 
     let x: Vec<char> = buf.chars().collect();
 
-    // ------------------------------------
+    x
 }
