@@ -32,6 +32,10 @@ fn main() {
     assert_eq!(tree.query(4, 8), 6);
 
     assert_eq!(tree.query(0, 8), 2);
+
+    assert_eq!(tree.query(1, 4), 2);
+    assert_eq!(tree.query(3, 6), 6);
+    assert_eq!(tree.query(1, 7), 2);
 }
 
 struct SegmentTree {
