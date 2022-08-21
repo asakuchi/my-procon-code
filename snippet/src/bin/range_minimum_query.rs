@@ -1,5 +1,5 @@
 //!
-//! Range Minimum Query
+//! Range Minimum Query(RSM)
 //! セグメント木
 //!
 fn main() {
