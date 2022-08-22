@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use proconio::input;
 
 fn main() {
@@ -9,60 +11,23 @@ fn main() {
         a: [usize; n],
     }
 
-    let targets = vec![p, q, r];
+    let mut acc = HashSet::new();
+    let mut s = vec![0; n + 1];
 
-    let result = syaku(&targets, 0, &a);
-
-    if result {
-        println!("Yes");
-    } else {
-        println!("No");
-    }
-}
-
-fn syaku(targets: &Vec<usize>, step: usize, list: &Vec<usize>) -> bool {
-    if step == 3 {
-        return true;
+    for i in 0..n {
+        s[i + 1] = s[i] + a[i];
+        acc.insert(s[i + 1]);
     }
 
-    if list.len() == 0 {
-        return false;
-    }
-
-    // println!("start syaku {:?}", list);
-
-    let mut sum = list[0];
-
-    let target = targets[step];
-
-    // println!("target:{} step:{}", target, step);
-
-    let mut r = 0;
-
-    for l in 0..list.len() {
-        while sum < target {
-            r += 1;
-
-            if r == list.len() {
-                return false;
-            }
-
-            sum += list[r];
+    for i in 0..n {
+        if acc.contains(&(s[i] + p))
+            && acc.contains(&(s[i] + p + q))
+            && acc.contains(&(s[i] + p + q + r))
+        {
+            println!("Yes");
+            return;
         }
-
-        // println!("{} {} {}", l, r, sum);
-
-        if sum == target {
-            let new_list = &list[r + 1..];
-            let new_list = new_list.to_vec();
-
-            if syaku(targets, step + 1, &new_list) {
-                return true;
-            }
-        }
-
-        sum -= list[l];
     }
 
-    false
+    println!("No");
 }
