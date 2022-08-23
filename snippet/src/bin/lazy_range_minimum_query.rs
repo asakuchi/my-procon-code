@@ -2,19 +2,80 @@
 //! Range Minimum Query and Range Update Query (RMQ and RUQ)
 //! 遅延評価セグメント木
 //!
-fn main() {
-    let mut _tree = LazySegmentTree::new(8);
+//! https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=DSL_2_F&lang=ja
+//!
+
+fn input_tuple() -> (usize, usize) {
+    let stdin = std::io::stdin();
+
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
+
+    let mut iter = buf.split_whitespace();
+
+    let n: usize = iter.next().unwrap().parse().unwrap();
+    let m: usize = iter.next().unwrap().parse().unwrap();
+
+    (n, m)
 }
 
-struct LazySegmentTree {
+fn input_tuple_4() -> (usize, usize, usize, usize) {
+    let stdin = std::io::stdin();
+
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
+
+    let mut iter = buf.split_whitespace();
+
+    let n: usize = iter.next().unwrap().parse().unwrap();
+    let m: usize = iter.next().unwrap().parse().unwrap();
+    let o: usize = iter.next().unwrap().parse().unwrap();
+    let p: usize = iter.next().unwrap_or("0").parse().unwrap();
+
+    (n, m, o, p)
+}
+
+fn main() {
+    let (n, q) = input_tuple();
+
+    let mut tree = LazySegmentTreeRmq::new(n);
+
+    for i in 0..n {
+        tree.update(i, i + 1, std::i32::MAX as isize);
+    }
+
+    for _ in 0..q {
+        let (com, s, t, x) = input_tuple_4();
+
+        match com {
+            0 => {
+                tree.update(s, t + 1, x as isize);
+            }
+            _ => {
+                println!("{}", tree.query(s, t + 1));
+            }
+        }
+    }
+}
+
+///
+///
+/// Range Minimum Query and Range Update Query (RMQ and RUQ)
+///
+/// 遅延評価セグメント木
+///
+///
+struct LazySegmentTreeRmq {
     n: usize,
     data: Vec<isize>,
     lazy: Vec<isize>,
     lazy_flag: Vec<bool>,
 }
 
-impl LazySegmentTree {
-    fn new(size: usize) -> LazySegmentTree {
+impl LazySegmentTreeRmq {
+    fn new(size: usize) -> LazySegmentTreeRmq {
         let mut n = 1;
 
         while n < size {
@@ -29,7 +90,7 @@ impl LazySegmentTree {
             data[i] = std::isize::MAX;
         }
 
-        LazySegmentTree {
+        LazySegmentTreeRmq {
             n,
             data,
             lazy,
