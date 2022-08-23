@@ -1,63 +1,92 @@
 //!
-//! Range Minimum Query(RSM)
+//! Range Minimum Query(RMQ)
 //! セグメント木
 //!
-fn main() {
-    let mut tree = SegmentTree::new(8);
+//! https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=DSL_2_A&lang=ja
+//!
 
-    tree.update(0, 3);
-    tree.update(1, 5);
-    tree.update(2, 2);
-    tree.update(3, 11);
-    tree.update(4, 9);
-    tree.update(5, 6);
-    tree.update(6, 20);
-    tree.update(7, 8);
+fn input_nq() -> (usize, usize) {
+    let stdin = std::io::stdin();
 
-    assert_eq!(tree.query(0, 1), 3);
-    assert_eq!(tree.query(1, 2), 5);
-    assert_eq!(tree.query(2, 3), 2);
-    assert_eq!(tree.query(3, 4), 11);
-    assert_eq!(tree.query(4, 5), 9);
-    assert_eq!(tree.query(5, 6), 6);
-    assert_eq!(tree.query(6, 7), 20);
-    assert_eq!(tree.query(7, 8), 8);
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
 
-    assert_eq!(tree.query(0, 2), 3);
-    assert_eq!(tree.query(2, 4), 2);
-    assert_eq!(tree.query(4, 6), 6);
-    assert_eq!(tree.query(6, 8), 8);
+    let mut iter = buf.split_whitespace();
 
-    assert_eq!(tree.query(0, 4), 2);
-    assert_eq!(tree.query(4, 8), 6);
+    let n: usize = iter.next().unwrap().parse().unwrap();
+    let q: usize = iter.next().unwrap().parse().unwrap();
 
-    assert_eq!(tree.query(0, 8), 2);
-
-    assert_eq!(tree.query(1, 4), 2);
-    assert_eq!(tree.query(3, 6), 6);
-    assert_eq!(tree.query(1, 7), 2);
+    (n, q)
 }
 
-struct SegmentTree {
+fn input_com_xy() -> (usize, usize, usize) {
+    let stdin = std::io::stdin();
+
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
+
+    let mut iter = buf.split_whitespace();
+
+    let com: usize = iter.next().unwrap().parse().unwrap();
+    let x: usize = iter.next().unwrap().parse().unwrap();
+    let y: usize = iter.next().unwrap().parse().unwrap();
+
+    (com, x, y)
+}
+fn main() {
+    let (n, q) = input_nq();
+
+    let mut tree = SegmentTreeRmq::new(n);
+
+    for i in 0..n {
+        // 2^31 - 1 で初期化
+        tree.update(i, std::i32::MAX as isize);
+    }
+
+    for _ in 0..q {
+        let (com, x, y) = input_com_xy();
+
+        match com {
+            0 => {
+                tree.update(x, y as isize);
+            }
+            _ => {
+                // 入力は閉区間で渡されるので +1
+                println!("{}", tree.query(x, y + 1));
+            }
+        }
+    }
+}
+
+///
+///
+/// Range Minimum Query(RMQ)
+///
+/// セグメント木
+///
+///
+struct SegmentTreeRmq {
     n: usize,
     data: Vec<isize>,
 }
 
-impl SegmentTree {
-    fn new(size: usize) -> SegmentTree {
-        let mut data = vec![0; 1 << 20];
-
+impl SegmentTreeRmq {
+    fn new(size: usize) -> SegmentTreeRmq {
         let mut n = 1;
 
         while n < size {
             n *= 2;
         }
 
+        let mut data = vec![0; 2 * n - 1];
+
         for i in 0..2 * n - 1 {
             data[i] = std::isize::MAX;
         }
 
-        SegmentTree { n, data }
+        SegmentTreeRmq { n, data }
     }
 
     fn update(&mut self, k: usize, a: isize) {

@@ -2,66 +2,87 @@
 //! Range Sum Query(RSQ)
 //! セグメント木
 //!
-fn main() {
-    let n = 8;
+//! https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=DSL_2_B&lang=ja
+//!
 
-    let mut tree = SegmentTree::new(n);
+fn input_tuple() -> (usize, usize) {
+    let stdin = std::io::stdin();
 
-    tree.add(0, 10);
-    tree.add(1, 20);
-    tree.add(2, 30);
-    tree.add(3, 40);
-    tree.add(4, 50);
-    tree.add(5, 60);
-    tree.add(6, 70);
-    tree.add(7, 80);
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
 
-    println!("{:?}", &tree.data[0..n * 2 - 1]);
+    let mut iter = buf.split_whitespace();
 
-    assert_eq!(tree.query(0, 1), 10);
-    assert_eq!(tree.query(1, 2), 20);
-    assert_eq!(tree.query(2, 3), 30);
-    assert_eq!(tree.query(3, 4), 40);
-    assert_eq!(tree.query(4, 5), 50);
-    assert_eq!(tree.query(5, 6), 60);
-    assert_eq!(tree.query(6, 7), 70);
-    assert_eq!(tree.query(7, 8), 80);
+    let n: usize = iter.next().unwrap().parse().unwrap();
+    let m: usize = iter.next().unwrap().parse().unwrap();
 
-    assert_eq!(tree.query(0, 2), 30);
-    assert_eq!(tree.query(2, 4), 70);
-    assert_eq!(tree.query(4, 6), 110);
-    assert_eq!(tree.query(6, 8), 150);
-
-    assert_eq!(tree.query(0, 4), 100);
-    assert_eq!(tree.query(4, 8), 260);
-
-    assert_eq!(tree.query(0, 8), 360);
-
-    assert_eq!(tree.query(1, 4), 90);
-    assert_eq!(tree.query(3, 6), 150);
-    assert_eq!(tree.query(1, 7), 270);
+    (n, m)
 }
 
-struct SegmentTree {
+fn input_tuple_3() -> (usize, usize, usize) {
+    let stdin = std::io::stdin();
+
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
+
+    let mut iter = buf.split_whitespace();
+
+    let n: usize = iter.next().unwrap().parse().unwrap();
+    let m: usize = iter.next().unwrap().parse().unwrap();
+    let l: usize = iter.next().unwrap().parse().unwrap();
+
+    (n, m, l)
+}
+
+fn main() {
+    let (n, q) = input_tuple();
+
+    let mut tree = SegmentTreeRsq::new(n);
+
+    for _ in 0..q {
+        let (com, x, y) = input_tuple_3();
+
+        match com {
+            0 => {
+                // x は 1-index
+                tree.add(x - 1, y as isize);
+            }
+            _ => {
+                println!("{}", tree.query(x - 1, y));
+            }
+        }
+    }
+}
+
+///
+///
+/// Range Sum Query(RSQ)
+///
+/// セグメント木
+///
+///
+struct SegmentTreeRsq {
     n: usize,
     data: Vec<isize>,
 }
 
-impl SegmentTree {
-    fn new(size: usize) -> SegmentTree {
-        let mut data = vec![0; 1 << 20];
-
+impl SegmentTreeRsq {
+    fn new(size: usize) -> SegmentTreeRsq {
         let mut n = 1;
 
         while n < size {
             n *= 2;
         }
 
+        let mut data = vec![0; 2 * n - 1];
+
         for i in 0..2 * n - 1 {
             data[i] = 0;
         }
 
-        SegmentTree { n, data }
+        SegmentTreeRsq { n, data }
     }
 
     ///

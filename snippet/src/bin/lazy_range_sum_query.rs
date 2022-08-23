@@ -2,34 +2,96 @@
 //! Range Sum Query and Range Add Query (RSQ and RAQ)
 //! 遅延評価セグメント木
 //!
-fn main() {
-    let n = 8;
+//! https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=DSL_2_G&lang=ja
+//!
 
-    let mut _tree = LazySegmentTree::new(n);
+fn input_tuple() -> (usize, usize) {
+    let stdin = std::io::stdin();
+
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
+
+    let mut iter = buf.split_whitespace();
+
+    let n: usize = iter.next().unwrap().parse().unwrap();
+    let m: usize = iter.next().unwrap().parse().unwrap();
+
+    (n, m)
 }
 
-struct LazySegmentTree {
+fn input_query() -> (usize, usize, usize, usize) {
+    let stdin = std::io::stdin();
+
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
+
+    let mut iter = buf.split_whitespace();
+
+    let n: usize = iter.next().unwrap().parse().unwrap();
+    let m: usize = iter.next().unwrap().parse().unwrap();
+    let l: usize = iter.next().unwrap().parse().unwrap();
+    let k: usize = iter.next().unwrap_or("0").parse().unwrap_or(0);
+
+    (n, m, l, k)
+}
+
+fn main() {
+    let (n, q) = input_tuple();
+
+    let mut tree = LazySegmentTreeRsq::new(n);
+
+    // println!("data:{:?}", &tree.data[0..4 * 2 - 1]);
+    // println!("lazy:{:?}", &tree.lazy[0..4 * 2 - 1]);
+
+    for _ in 0..q {
+        let (com, s, t, x) = input_query();
+
+        match com {
+            0 => {
+                // 1-index なので -1
+                tree.add(s - 1, t, x as isize);
+            }
+            _ => {
+                // 1-index なので -1
+                println!("{}", tree.query(s - 1, t));
+            }
+        }
+
+        // println!("data:{:?}", &tree.data[0..4 * 2 - 1]);
+        // println!("lazy:{:?}", &tree.lazy[0..4 * 2 - 1]);
+    }
+}
+///
+///
+/// Range Sum Query and Range Add Query (RSQ and RAQ)
+///
+/// 遅延評価セグメント木
+///
+///
+struct LazySegmentTreeRsq {
     n: usize,
     data: Vec<isize>,
     lazy: Vec<isize>,
 }
 
-impl LazySegmentTree {
-    fn new(size: usize) -> LazySegmentTree {
-        let mut data = vec![0; 1 << 20];
-        let lazy = vec![0; 1 << 20];
-
+impl LazySegmentTreeRsq {
+    fn new(size: usize) -> LazySegmentTreeRsq {
         let mut n = 1;
 
         while n < size {
             n *= 2;
         }
 
+        let mut data = vec![0; 2 * n - 1];
+        let lazy = vec![0; 2 * n - 1];
+
         for i in 0..2 * n - 1 {
             data[i] = 0;
         }
 
-        LazySegmentTree { n, data, lazy }
+        LazySegmentTreeRsq { n, data, lazy }
     }
 
     fn eval(&mut self, k: usize, l: usize, r: usize) {
