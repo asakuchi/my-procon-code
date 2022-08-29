@@ -45,11 +45,11 @@ impl std::ops::Mul<f64> for Point2 {
 }
 
 enum CCW_PATTERN {
-    COUNTER_CLOCKWISE,
-    CLOCKWISE,
-    ONLINE_BACK,
-    ONLINE_FRONT,
-    ON_SEGMENT,
+    COUNTER_CLOCKWISE = 1,
+    CLOCKWISE = -1,
+    ONLINE_BACK = 2,
+    ONLINE_FRONT = -2,
+    ON_SEGMENT = 0,
 }
 
 impl Point2 {
@@ -126,6 +126,14 @@ impl Point2 {
 
         CCW_PATTERN::ON_SEGMENT
     }
+
+    /// 線分 p1p2 と線分 p3p4 の交差判定
+    fn intersect(p1: Point2, p2: Point2, p3: Point2, p4: Point2) -> bool {
+        Self::counter_clockwise(p1, p2, p3) as i32 * Self::counter_clockwise(p1, p2, p4) as i32 <= 0
+            && Self::counter_clockwise(p3, p4, p1) as i32
+                * Self::counter_clockwise(p3, p4, p2) as i32
+                <= 0
+    }
 }
 
 /// 線分
@@ -146,6 +154,11 @@ impl Segment2 {
     /// 線分を対称軸とした点pの線対称の点
     fn reflect(&self, p: Point2) -> Point2 {
         p + (self.project(p) - p) * 2.
+    }
+
+    /// 線分 p1p2 と線分 p3p4 の交差判定
+    fn intersect(&self, rhs: Segment2) -> bool {
+        Point2::intersect(self.0, self.1, rhs.0, rhs.1)
     }
 }
 
