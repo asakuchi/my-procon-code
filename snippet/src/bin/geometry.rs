@@ -44,6 +44,14 @@ impl std::ops::Mul<f64> for Point2 {
     }
 }
 
+enum CCW_PATTERN {
+    COUNTER_CLOCKWISE,
+    CLOCKWISE,
+    ONLINE_BACK,
+    ONLINE_FRONT,
+    ON_SEGMENT,
+}
+
 impl Point2 {
     /// ノルム
     /// ベクトルの大きさ
@@ -91,6 +99,32 @@ impl Point2 {
     /// 外積0なら平行
     fn is_parallel(&self, rhs: Point2) -> bool {
         self.cross(rhs).abs() < EPS
+    }
+
+    ///
+    /// ベクトルa,bの位置関係
+    ///
+    fn counter_clockwise(p0: Point2, p1: Point2, p2: Point2) -> CCW_PATTERN {
+        let a = p1 - p0;
+        let b = p2 - p0;
+
+        if a.cross(b) > EPS {
+            return CCW_PATTERN::COUNTER_CLOCKWISE;
+        }
+
+        if a.cross(b) < -EPS {
+            return CCW_PATTERN::CLOCKWISE;
+        }
+
+        if a.dot(b) < -EPS {
+            return CCW_PATTERN::ONLINE_BACK;
+        }
+
+        if a.norm() < b.norm() {
+            return CCW_PATTERN::ONLINE_FRONT;
+        }
+
+        CCW_PATTERN::ON_SEGMENT
     }
 }
 
