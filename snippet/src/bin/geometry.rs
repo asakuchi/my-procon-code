@@ -87,7 +87,7 @@ impl Point2 {
     }
 
     /// 2つのベクトルが平行か
-    /// 
+    ///
     /// 外積0なら平行
     fn is_parallel(&self, rhs: Point2) -> bool {
         self.cross(rhs).abs() < EPS
@@ -96,6 +96,17 @@ impl Point2 {
 
 /// 線分
 struct Segment2(Point2, Point2);
+
+impl Segment2 {
+    /// 射影
+    ///
+    /// 点p から線分に垂線を引いた時の交点
+    fn project(&self, p: Point2) -> Point2 {
+        let base = self.1 - self.0;
+        let r = (p - self.0).dot(base) / base.norm();
+        self.0 + base * r
+    }
+}
 
 /// 直線
 struct Line2(Segment2);
