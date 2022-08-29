@@ -106,6 +106,13 @@ impl Segment2 {
         let r = (p - self.0).dot(base) / base.norm();
         self.0 + base * r
     }
+
+    /// 反射
+    ///
+    /// 線分を対称軸とした点pの線対称の点
+    fn reflect(&self, p: Point2) -> Point2 {
+        p + (self.project(p) - p) * 2.
+    }
 }
 
 /// 直線
