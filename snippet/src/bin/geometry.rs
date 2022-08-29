@@ -80,8 +80,17 @@ impl Point2 {
     }
 
     /// 2つのベクトルが直交するか
+    ///
+    /// 内積0なら直交している
     fn is_orthogonal(&self, rhs: Point2) -> bool {
         self.dot(rhs).abs() < EPS
+    }
+
+    /// 2つのベクトルが平行か
+    /// 
+    /// 外積0なら平行
+    fn is_parallel(&self, rhs: Point2) -> bool {
+        self.cross(rhs).abs() < EPS
     }
 }
 
