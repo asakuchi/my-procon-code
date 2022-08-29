@@ -62,7 +62,7 @@ impl Point2 {
     /// ノルム
     /// ベクトルの大きさ
     fn abs(&self) -> f64 {
-        self.norm().abs()
+        self.norm().sqrt()
     }
 
     /// マンハッタン距離
@@ -137,9 +137,15 @@ impl Point2 {
 }
 
 /// 線分
+#[derive(Copy, Clone, Debug)]
 struct Segment2(Point2, Point2);
 
+/// 線分
 impl Segment2 {
+    fn to_line(&self) -> Line2 {
+        Line2(self.clone())
+    }
+
     /// 射影
     ///
     /// 点p から線分に垂線を引いた時の交点
@@ -160,10 +166,50 @@ impl Segment2 {
     fn intersect(&self, rhs: Segment2) -> bool {
         Point2::intersect(self.0, self.1, rhs.0, rhs.1)
     }
+
+    /// 線分と点pの距離
+    fn distance_from_point(&self, p: Point2) -> f64 {
+        // 場合分けが必要
+
+        if (self.1 - self.0).dot(p - self.0) < 0. {
+            return (p - self.0).abs();
+        }
+
+        if (self.0 - self.1).dot(p - self.1) < 0. {
+            return (p - self.1).abs();
+        }
+
+        self.to_line().distance_from_point(p)
+    }
+
+    /// 線分 s1 と線分 s2 の距離
+    fn distance_from_segment(&self, s: Segment2) -> f64 {
+        if self.intersect(s) {
+            return 0.;
+        }
+
+        let distance_1 = self.distance_from_point(s.0);
+        let distance_2 = self.distance_from_point(s.1);
+        let distance_3 = s.distance_from_point(self.0);
+        let distance_4 = s.distance_from_point(self.1);
+
+        distance_1.min(distance_2).min(distance_3).min(distance_4)
+    }
 }
 
 /// 直線
+#[derive(Copy, Clone, Debug)]
 struct Line2(Segment2);
+
+impl Line2 {
+    /// 直線と点pの距離
+    fn distance_from_point(&self, p: Point2) -> f64 {
+        let vector_a = self.0 .1 - self.0 .0;
+        let vector_b = p - self.0 .0;
+
+        vector_a.cross(vector_b).abs() / vector_a.abs()
+    }
+}
 
 /// 円
 struct Circle {
