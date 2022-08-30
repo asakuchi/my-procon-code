@@ -21,7 +21,7 @@ fn main() {
 
 const EPS: f64 = 1e-10;
 
-/// 座標
+/// 座標, ベクトル
 #[derive(Copy, Clone, Debug)]
 struct Point2(f64, f64);
 
@@ -46,6 +46,14 @@ impl std::ops::Mul<f64> for Point2 {
 
     fn mul(self, k: f64) -> Self {
         Point2(self.0 * k, self.1 * k)
+    }
+}
+
+impl std::ops::Div<f64> for Point2 {
+    type Output = Point2;
+
+    fn div(self, k: f64) -> Self {
+        Point2(self.0 / k, self.1 / k)
     }
 }
 
@@ -141,16 +149,11 @@ impl Point2 {
     }
 }
 
-/// 線分
+/// 線分、直線
 #[derive(Copy, Clone, Debug)]
 struct Segment2(Point2, Point2);
 
-/// 線分
 impl Segment2 {
-    fn to_line(&self) -> Line2 {
-        Line2(self.clone())
-    }
-
     /// 線分をベクトル表現
     fn to_vector(&self) -> Point2 {
         self.1 - self.0
@@ -194,7 +197,15 @@ impl Segment2 {
             return (p - self.1).abs();
         }
 
-        self.to_line().distance_from_point(p)
+        self.distance_between_line_and_point(p)
+    }
+
+    /// 直線と点pの距離
+    fn distance_between_line_and_point(&self, p: Point2) -> f64 {
+        let vector_a = self.1 - self.0;
+        let vector_b = p - self.0;
+
+        vector_a.cross(vector_b).abs() / vector_a.abs()
     }
 
     /// 線分 s1 と線分 s2 の距離
@@ -221,24 +232,34 @@ impl Segment2 {
     }
 }
 
-/// 直線
-#[derive(Copy, Clone, Debug)]
-struct Line2(Segment2);
-
-impl Line2 {
-    /// 直線と点pの距離
-    fn distance_from_point(&self, p: Point2) -> f64 {
-        let vector_a = self.0 .1 - self.0 .0;
-        let vector_b = p - self.0 .0;
-
-        vector_a.cross(vector_b).abs() / vector_a.abs()
-    }
+/// 線分 s1 と線分 s2 の交点
+fn cross_point(s1: Segment2, s2: Segment2) -> Point2 {
+    s1.cross_point(s2)
 }
 
 /// 円
 struct Circle {
     center: Point2,
     radius: f64,
+}
+
+impl Circle {
+    /// 円と直線 の交差判定
+    fn intersect_line(&self, line: Segment2) -> bool {
+        line.distance_between_line_and_point(self.center) <= self.radius
+    }
+
+    /// 円と直線の交点
+    fn cross_points_with_line(&self, line: Segment2) -> (Point2, Point2) {
+        // 交差していること
+        assert!(self.intersect_line(line));
+
+        let pr = line.project(self.center);
+        let e = line.to_vector() / line.to_vector().abs();
+        let base = (self.radius * self.radius - (pr - self.center).norm()).sqrt();
+
+        (pr + e * base, pr - e * base)
+    }
 }
 
 /// 多角形
