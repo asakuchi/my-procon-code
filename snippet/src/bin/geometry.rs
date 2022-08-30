@@ -14,6 +14,11 @@ fn main() {
     println!("{:?}", rotate(1., 2., 3., 4., 0.5 * std::f64::consts::PI));
 }
 
+// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
+
 const EPS: f64 = 1e-10;
 
 /// 座標
@@ -146,6 +151,16 @@ impl Segment2 {
         Line2(self.clone())
     }
 
+    /// 線分をベクトル表現
+    fn to_vector(&self) -> Point2 {
+        self.1 - self.0
+    }
+
+    /// 線分をベクトル表現（逆向き）
+    fn to_reversed_vector(&self) -> Point2 {
+        self.0 - self.1
+    }
+
     /// 射影
     ///
     /// 点p から線分に垂線を引いた時の交点
@@ -194,6 +209,15 @@ impl Segment2 {
         let distance_4 = s.distance_from_point(self.1);
 
         distance_1.min(distance_2).min(distance_3).min(distance_4)
+    }
+
+    /// 線分 s1 と線分 s2 の交点
+    fn cross_point(&self, s: Segment2) -> Point2 {
+        let base = s.to_vector();
+        let d1 = base.cross(self.0 - s.0).abs();
+        let d2 = base.cross(self.1 - s.0).abs();
+        let t = d1 / (d1 + d2);
+        self.0 + (self.1 - self.0) * t
     }
 }
 
