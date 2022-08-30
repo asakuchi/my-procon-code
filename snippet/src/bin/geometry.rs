@@ -21,6 +21,110 @@ fn main() {
 
 const EPS: f64 = 1e-10;
 
+/// 度(度数法)
+#[derive(Copy, Clone, Debug)]
+struct Degree(f64);
+
+impl Degree {
+    fn to_radian(&self) -> Radian {
+        Radian(self.0 * std::f64::consts::PI / 180.)
+    }
+}
+
+trait ToDegree {
+    fn to_degree(&self) -> Degree;
+}
+
+impl ToDegree for f64 {
+    fn to_degree(&self) -> Degree {
+        Degree(*self)
+    }
+}
+
+impl std::ops::Add for Degree {
+    type Output = Degree;
+
+    fn add(self, rhs: Self) -> Self {
+        Degree(self.0 + rhs.0)
+    }
+}
+
+impl std::ops::Sub for Degree {
+    type Output = Degree;
+
+    fn sub(self, rhs: Self) -> Self {
+        Degree(self.0 - rhs.0)
+    }
+}
+
+impl std::ops::Mul<f64> for Degree {
+    type Output = Degree;
+
+    fn mul(self, k: f64) -> Self {
+        Degree(self.0 * k)
+    }
+}
+
+impl std::ops::Div<f64> for Degree {
+    type Output = Degree;
+
+    fn div(self, k: f64) -> Self {
+        Degree(self.0 / k)
+    }
+}
+
+/// ラジアン(弧度法)
+#[derive(Copy, Clone, Debug)]
+struct Radian(f64);
+
+impl Radian {
+    fn to_degree(&self) -> Degree {
+        Degree(self.0 * 180. / std::f64::consts::PI)
+    }
+}
+
+trait ToRadian {
+    fn to_radian(&self) -> Radian;
+}
+
+impl ToRadian for f64 {
+    fn to_radian(&self) -> Radian {
+        Radian(*self)
+    }
+}
+
+impl std::ops::Add for Radian {
+    type Output = Radian;
+
+    fn add(self, rhs: Self) -> Self {
+        Radian(self.0 + rhs.0)
+    }
+}
+
+impl std::ops::Sub for Radian {
+    type Output = Radian;
+
+    fn sub(self, rhs: Self) -> Self {
+        Radian(self.0 - rhs.0)
+    }
+}
+
+impl std::ops::Mul<f64> for Radian {
+    type Output = Radian;
+
+    fn mul(self, k: f64) -> Self {
+        Radian(self.0 * k)
+    }
+}
+
+impl std::ops::Div<f64> for Radian {
+    type Output = Radian;
+
+    fn div(self, k: f64) -> Self {
+        Radian(self.0 / k)
+    }
+}
+
 /// 座標, ベクトル
 #[derive(Copy, Clone, Debug)]
 struct Point2(f64, f64);
@@ -149,13 +253,13 @@ impl Point2 {
     }
 
     /// 角度
-    fn arg(&self) -> f64 {
-        self.1.atan2(self.0)
+    fn arg(&self) -> Radian {
+        Radian(self.1.atan2(self.0))
     }
 
     /// 極座標から変換
-    fn poloar(a: f64, r: f64) -> Point2 {
-        Point2(r.cos() * a, r.sin() * a)
+    fn poloar(r: f64, theta: Radian) -> Point2 {
+        Point2(theta.0.cos() * r, theta.0.sin() * r)
     }
 }
 
@@ -284,7 +388,8 @@ impl Circle {
         let d = (self.center - rhs.center).abs();
         let a = ((self.radius * self.radius + d * d - rhs.radius * rhs.radius)
             / (2. * self.radius * d))
-            .acos();
+            .acos()
+            .to_radian();
         let t = (rhs.center - self.center).arg();
 
         (
