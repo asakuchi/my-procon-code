@@ -147,6 +147,16 @@ impl Point2 {
                 * Self::counter_clockwise(p3, p4, p2) as i32
                 <= 0
     }
+
+    /// 角度
+    fn arg(&self) -> f64 {
+        self.1.atan2(self.0)
+    }
+
+    /// 極座標から変換
+    fn poloar(a: f64, r: f64) -> Point2 {
+        Point2(r.cos() * a, r.sin() * a)
+    }
 }
 
 /// 線分、直線
@@ -238,6 +248,7 @@ fn cross_point(s1: Segment2, s2: Segment2) -> Point2 {
 }
 
 /// 円
+#[derive(Copy, Clone, Debug)]
 struct Circle {
     center: Point2,
     radius: f64,
@@ -259,6 +270,27 @@ impl Circle {
         let base = (self.radius * self.radius - (pr - self.center).norm()).sqrt();
 
         (pr + e * base, pr - e * base)
+    }
+
+    /// 円と円 の交差判定
+    fn intersect_circle(&self, rhs: Circle) -> bool {
+        (self.center - rhs.center).abs() <= self.radius + rhs.radius
+    }
+
+    /// 円と円の交点
+    fn cross_points_with_circle(&self, rhs: Circle) -> (Point2, Point2) {
+        assert!(self.intersect_circle(rhs));
+
+        let d = (self.center - rhs.center).abs();
+        let a = ((self.radius * self.radius + d * d - rhs.radius * rhs.radius)
+            / (2. * self.radius * d))
+            .acos();
+        let t = (rhs.center - self.center).arg();
+
+        (
+            self.center + Point2::poloar(self.radius, t + a),
+            self.center + Point2::poloar(self.radius, t - a),
+        )
     }
 }
 
