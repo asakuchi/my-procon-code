@@ -1,17 +1,47 @@
-//!
-//! 幾何
-//!
-
 fn main() {
-    let p1 = Point2(1., 1.);
-    let p2 = Point2(2., 3.);
+    let n = input_usize();
 
-    println!("{:?}", p1 + p2);
-    println!("{:?}", p1 - p2);
-    println!("{:?}", p1 * 3.);
+    let mut list = Vec::new();
 
-    println!("{}", cos_formula(3., 4., 0.5 * std::f64::consts::PI,));
-    println!("{:?}", rotate(1., 2., 3., 4., 0.5 * std::f64::consts::PI));
+    for _ in 0..n {
+        let p = input_tuple();
+        list.push(p);
+    }
+
+    let polygon = Polygon(list);
+
+    if polygon.is_convex() {
+        println!("1");
+    } else {
+        println!("0");
+    }
+}
+
+fn input_usize() -> usize {
+    let stdin = std::io::stdin();
+
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
+
+    let n: usize = buf.parse().unwrap();
+
+    n
+}
+
+fn input_tuple() -> Point2 {
+    let stdin = std::io::stdin();
+
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
+
+    let mut iter = buf.split_whitespace();
+
+    let v1: f64 = iter.next().unwrap().parse().unwrap();
+    let v2: f64 = iter.next().unwrap().parse().unwrap();
+
+    Point2(v1, v2)
 }
 
 // -----------------------------------------------------------------------
