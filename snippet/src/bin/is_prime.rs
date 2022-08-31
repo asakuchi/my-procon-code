@@ -121,7 +121,10 @@ fn divisors(n: usize) -> Vec<usize> {
         while i * i <= n {
             if n % i == 0 {
                 list.push(i);
-                list.push(n / i);
+
+                if n / i != i {
+                    list.push(n / i);
+                }
             }
 
             i += 1;
