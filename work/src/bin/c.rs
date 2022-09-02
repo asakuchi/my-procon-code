@@ -1,5 +1,5 @@
-use proconio::fastout;
 use proconio::input;
+// use proconio::fastout;
 // use proconio::derive_readable;
 // use proconio::marker::Chars;
 // use proconio::marker::Usize1;
@@ -7,7 +7,7 @@ use proconio::input;
 // use itertools::Itertools;
 // use petgraph::unionfind::UnionFind;
 
-#[fastout]
+// #[fastout]
 fn main() {
     input! {
         n: usize,
