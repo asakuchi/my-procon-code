@@ -11,47 +11,49 @@ fn main() {
     println!("{:?}", p1 * 3.);
 
     println!("{}", cos_formula(3., 4., 0.5 * std::f64::consts::PI,));
-    println!("{:?}", rotate(1., 2., 3., 4., 0.5 * std::f64::consts::PI));
+    // println!("{:?}", rotate(1., 2., 3., 4., 0.5 * std::f64::consts::PI));
+    p1.rotate(Point2(0., 0.), Degree(30.).to_radian());
 }
 
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
+
 #[allow(dead_code)]
 const EPS: f64 = 1e-10;
 
 /// 度(度数法)
-#[derive(Copy, Clone, Debug)]
 // #[derive_readable]
+#[derive(Copy, Clone, Debug)]
 struct Degree(f64);
 
 /// ラジアン(弧度法)
-#[derive(Copy, Clone, Debug)]
 // #[derive_readable]
+#[derive(Copy, Clone, Debug)]
 struct Radian(f64);
 
 /// 座標, ベクトル
-#[derive(Copy, Clone, Debug)]
 // #[derive_readable]
+#[derive(Copy, Clone, Debug)]
 struct Point2(f64, f64);
 
 /// 線分、直線
-#[derive(Copy, Clone, Debug)]
 // #[derive_readable]
+#[derive(Copy, Clone, Debug)]
 struct Segment2(Point2, Point2);
 
 /// 円
-#[derive(Copy, Clone, Debug)]
 // #[derive_readable]
+#[derive(Copy, Clone, Debug)]
 struct Circle {
     center: Point2,
     radius: f64,
 }
 
 /// 多角形
-#[derive(Clone, Debug)]
 // #[derive_readable]
+#[derive(Clone, Debug)]
 struct Polygon(Vec<Point2>);
 
 impl Degree {
@@ -184,6 +186,12 @@ impl std::ops::Div<f64> for Point2 {
     }
 }
 
+impl std::fmt::Display for Point2 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} {}", self.0, self.1)
+    }
+}
+
 #[allow(dead_code)]
 enum CcwPattern {
     CounterClockwise = 1,
@@ -296,6 +304,19 @@ impl Point2 {
     #[allow(dead_code)]
     fn poloar(r: f64, theta: Radian) -> Point2 {
         Point2(theta.0.cos() * r, theta.0.sin() * r)
+    }
+
+    /// 任意点周りの回転移動（アフィン変換）
+    /// https://imagingsolution.net/math/rotate-around-point/
+    #[allow(dead_code)]
+    fn rotate(&self, center: Point2, angle: Radian) -> Point2 {
+        Point2(
+            self.0 * angle.0.cos() - self.1 * angle.0.sin() + center.0 - center.0 * angle.0.cos()
+                + center.1 * angle.0.sin(),
+            self.0 * angle.0.sin() + self.1 * angle.0.cos() + center.1
+                - center.0 * angle.0.sin()
+                - center.1 * angle.0.cos(),
+        )
     }
 }
 
@@ -525,20 +546,4 @@ impl Polygon {
 #[allow(dead_code)]
 fn cos_formula(a: f64, b: f64, c_angle_radian: f64) -> f64 {
     (a * a + b * b - 2. * a * b * c_angle_radian.cos()).sqrt()
-}
-
-///
-/// 任意点周りの回転移動（アフィン変換）
-/// https://imagingsolution.net/math/rotate-around-point/
-///
-#[allow(dead_code)]
-fn rotate(x: f64, y: f64, center_x: f64, center_y: f64, angle_radian: f64) -> (f64, f64) {
-    let rotated_x = x * angle_radian.cos() - y * angle_radian.sin() + center_x
-        - center_x * angle_radian.cos()
-        + center_y * angle_radian.sin();
-    let rotated_y = x * angle_radian.sin() + y * angle_radian.cos() + center_y
-        - center_x * angle_radian.sin()
-        - center_y * angle_radian.cos();
-
-    (rotated_x, rotated_y)
 }
