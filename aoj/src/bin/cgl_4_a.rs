@@ -1,18 +1,60 @@
-//!
-//! 幾何
-//!
-
 fn main() {
-    let p1 = Point2(1., 1.);
-    let p2 = Point2(2., 3.);
+    let n = input_usize();
 
-    println!("{:?}", p1 + p2);
-    println!("{:?}", p1 - p2);
-    println!("{:?}", p1 * 3.);
+    let mut list = Vec::new();
 
-    println!("{}", cos_formula(3., 4., 0.5 * std::f64::consts::PI,));
-    // println!("{:?}", rotate(1., 2., 3., 4., 0.5 * std::f64::consts::PI));
-    p1.rotate(Point2(0., 0.), Degree(30.).to_radian());
+    for _ in 0..n {
+        let p = input_tuple();
+        list.push(p);
+    }
+
+    let polygon = Polygon::convex_hull(&list);
+
+    let mut start_i = 0;
+    let mut start_point = polygon.0[0];
+
+    for i in 0..polygon.0.len() {
+        let p = polygon.0[i];
+
+        if p.1 < start_point.1 || (p.1 == start_point.1 && p.0 < start_point.0) {
+            start_point = p;
+            start_i = i;
+        }
+    }
+
+    println!("{}", polygon.0.len());
+
+    for i in 0..polygon.0.len() {
+        let p = polygon.0[(start_i + i) % polygon.0.len()];
+        println!("{}", p);
+    }
+}
+
+fn input_usize() -> usize {
+    let stdin = std::io::stdin();
+
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
+
+    let n: usize = buf.parse().unwrap();
+
+    n
+}
+
+fn input_tuple() -> Point2 {
+    let stdin = std::io::stdin();
+
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
+
+    let mut iter = buf.split_whitespace();
+
+    let v1: f64 = iter.next().unwrap().parse().unwrap();
+    let v2: f64 = iter.next().unwrap().parse().unwrap();
+
+    Point2(v1, v2)
 }
 
 // -----------------------------------------------------------------------
