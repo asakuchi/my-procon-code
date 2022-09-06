@@ -12,7 +12,7 @@ fn main() {
 
     println!("{}", cos_formula(3., 4., 0.5 * std::f64::consts::PI,));
     // println!("{:?}", rotate(1., 2., 3., 4., 0.5 * std::f64::consts::PI));
-    p1.rotate(Point2 { x: 0., y: 0. }, Degree(30.).to_radian());
+    p1.rotate(Point2::ZERO, Degree(30.).to_radian());
 }
 
 // -----------------------------------------------------------------------
@@ -230,6 +230,14 @@ enum CcwPattern {
 }
 
 impl IsizePoint2 {
+    /// 原点、零ベクトル
+    #[allow(dead_code)]
+    const ZERO: IsizePoint2 = IsizePoint2 { x: 0, y: 0 };
+
+    /// 単位ベクトル
+    #[allow(dead_code)]
+    const ONE: IsizePoint2 = IsizePoint2 { x: 1, y: 1 };
+
     /// マンハッタン距離
     /// 2点間の距離
     #[allow(dead_code)]
@@ -258,6 +266,14 @@ impl IsizePoint2 {
 }
 
 impl Point2 {
+    /// 原点、零ベクトル
+    #[allow(dead_code)]
+    const ZERO: Point2 = Point2 { x: 0., y: 0. };
+
+    /// 単位ベクトル
+    #[allow(dead_code)]
+    const ONE: Point2 = Point2 { x: 1., y: 1. };
+
     /// ノルム
     /// ベクトルの大きさ
     #[allow(dead_code)]
