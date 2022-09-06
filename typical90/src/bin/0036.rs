@@ -1,24 +1,38 @@
-//!
-//! 幾何
-//!
+use proconio::{derive_readable, input, marker::Usize1};
 
 fn main() {
-    let p1 = Point2 { x: 1., y: 1. };
-    let p2 = Point2 { x: 2., y: 3. };
+    input! {
+        n: usize,
+        q: usize,
+        x_y: [IsizePoint2; n],
+        qi: [Usize1; q],
+    }
 
-    println!("{:?}", p1 + p2);
-    println!("{:?}", p1 - p2);
-    println!("{:?}", p1 * 3.);
+    let lotated: Vec<_> = x_y.iter().map(|&point| point.rotate_45()).collect();
 
-    println!("{}", cos_formula(3., 4., 0.5 * std::f64::consts::PI,));
-    // println!("{:?}", rotate(1., 2., 3., 4., 0.5 * std::f64::consts::PI));
-    p1.rotate(Point2 { x: 0., y: 0. }, Degree(30.).to_radian());
+    let mut x_list: Vec<_> = lotated.iter().map(|&point| point.x).collect();
+    let mut y_list: Vec<_> = lotated.iter().map(|&point| point.y).collect();
+
+    x_list.sort();
+    y_list.sort();
+
+    let x_min = x_list[0];
+    let x_max = x_list[n - 1];
+    let y_min = y_list[0];
+    let y_max = y_list[n - 1];
+
+    for i in qi {
+        let point = lotated[i];
+
+        let result = (x_max - point.x)
+            .abs()
+            .max((x_min - point.x).abs())
+            .max((y_max - point.y).abs())
+            .max((y_min - point.y).abs());
+
+        println!("{}", result);
+    }
 }
-
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
 
 #[allow(dead_code)]
 const EPS: f64 = 1e-10;
@@ -34,15 +48,14 @@ struct Degree(f64);
 struct Radian(f64);
 
 /// 座標, ベクトル
-// #[derive_readable]
+#[derive_readable]
 #[derive(Copy, Clone, Debug)]
 struct Point2 {
     x: f64,
     y: f64,
 }
 
-/// 座標, ベクトル（整数）
-// #[derive_readable]
+#[derive_readable]
 #[derive(Copy, Clone, Debug)]
 struct IsizePoint2 {
     x: isize,
@@ -268,18 +281,18 @@ impl Point2 {
         self.norm().sqrt()
     }
 
-    /// マンハッタン距離
-    /// 2点間の距離
-    #[allow(dead_code)]
-    fn manhattan_distance(&self, rhs: Point2) -> f64 {
-        (self.x - rhs.x).abs() + (self.y - rhs.y).abs()
-    }
-
     /// ユークリッド距離
     /// 2点間の距離
     #[allow(dead_code)]
     fn euclidean_distance(&self, rhs: Point2) -> f64 {
         ((self.x - rhs.x).powf(2.) + (self.y - rhs.y).powf(2.)).sqrt()
+    }
+
+    /// マンハッタン距離
+    /// 2点間の距離
+    #[allow(dead_code)]
+    fn manhattan_distance(&self, rhs: Point2) -> f64 {
+        (self.x - rhs.x).abs() + (self.y - rhs.y).abs()
     }
 
     /// 内積
