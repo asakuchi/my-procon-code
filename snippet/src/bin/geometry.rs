@@ -3,8 +3,8 @@
 //!
 
 fn main() {
-    let p1 = Point2(1., 1.);
-    let p2 = Point2(2., 3.);
+    let p1 = Point2 { x: 1., y: 1. };
+    let p2 = Point2 { x: 2., y: 3. };
 
     println!("{:?}", p1 + p2);
     println!("{:?}", p1 - p2);
@@ -12,7 +12,7 @@ fn main() {
 
     println!("{}", cos_formula(3., 4., 0.5 * std::f64::consts::PI,));
     // println!("{:?}", rotate(1., 2., 3., 4., 0.5 * std::f64::consts::PI));
-    p1.rotate(Point2(0., 0.), Degree(30.).to_radian());
+    p1.rotate(Point2 { x: 0., y: 0. }, Degree(30.).to_radian());
 }
 
 // -----------------------------------------------------------------------
@@ -36,7 +36,10 @@ struct Radian(f64);
 /// 座標, ベクトル
 // #[derive_readable]
 #[derive(Copy, Clone, Debug)]
-struct Point2(f64, f64);
+struct Point2 {
+    x: f64,
+    y: f64,
+}
 
 /// 線分、直線
 // #[derive_readable]
@@ -158,7 +161,10 @@ impl std::ops::Add for Point2 {
     type Output = Point2;
 
     fn add(self, rhs: Self) -> Self {
-        Point2(self.0 + rhs.0, self.1 + rhs.1)
+        Point2 {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        }
     }
 }
 
@@ -166,7 +172,10 @@ impl std::ops::Sub for Point2 {
     type Output = Point2;
 
     fn sub(self, rhs: Self) -> Self {
-        Point2(self.0 - rhs.0, self.1 - rhs.1)
+        Point2 {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+        }
     }
 }
 
@@ -174,7 +183,10 @@ impl std::ops::Mul<f64> for Point2 {
     type Output = Point2;
 
     fn mul(self, k: f64) -> Self {
-        Point2(self.0 * k, self.1 * k)
+        Point2 {
+            x: self.x * k,
+            y: self.y * k,
+        }
     }
 }
 
@@ -182,13 +194,16 @@ impl std::ops::Div<f64> for Point2 {
     type Output = Point2;
 
     fn div(self, k: f64) -> Self {
-        Point2(self.0 / k, self.1 / k)
+        Point2 {
+            x: self.x / k,
+            y: self.y / k,
+        }
     }
 }
 
 impl std::fmt::Display for Point2 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} {}", self.0, self.1)
+        write!(f, "{} {}", self.x, self.y)
     }
 }
 
@@ -207,7 +222,7 @@ impl Point2 {
     /// ベクトルの大きさ
     #[allow(dead_code)]
     fn norm(&self) -> f64 {
-        self.0 * self.0 + self.1 * self.1
+        self.x * self.x + self.y * self.y
     }
 
     /// ノルム
@@ -221,26 +236,26 @@ impl Point2 {
     /// 2点間の距離
     #[allow(dead_code)]
     fn manhattan_distance(&self, rhs: Point2) -> f64 {
-        (self.0 - rhs.0).abs() + (self.1 - rhs.1).abs()
+        (self.x - rhs.x).abs() + (self.y - rhs.y).abs()
     }
 
     /// ユークリッド距離
     /// 2点間の距離
     #[allow(dead_code)]
     fn euclidean_distance(&self, rhs: Point2) -> f64 {
-        ((self.0 - rhs.0).powf(2.) + (self.1 - rhs.1).powf(2.)).sqrt()
+        ((self.x - rhs.x).powf(2.) + (self.y - rhs.y).powf(2.)).sqrt()
     }
 
     /// 内積
     #[allow(dead_code)]
     fn dot(&self, rhs: Point2) -> f64 {
-        self.0 * rhs.0 + self.1 * rhs.1
+        self.x * rhs.x + self.y * rhs.y
     }
 
     /// 外積
     #[allow(dead_code)]
     fn cross(&self, rhs: Point2) -> f64 {
-        self.0 * rhs.1 - self.1 * rhs.0
+        self.x * rhs.y - self.y * rhs.x
     }
 
     /// 2つのベクトルが直交するか
@@ -298,26 +313,30 @@ impl Point2 {
     /// 角度
     #[allow(dead_code)]
     fn arg(&self) -> Radian {
-        Radian(self.1.atan2(self.0))
+        Radian(self.y.atan2(self.x))
     }
 
     /// 極座標から変換
     #[allow(dead_code)]
     fn poloar(r: f64, theta: Radian) -> Point2 {
-        Point2(theta.0.cos() * r, theta.0.sin() * r)
+        Point2 {
+            x: theta.0.cos() * r,
+            y: theta.0.sin() * r,
+        }
     }
 
     /// 任意点周りの回転移動（アフィン変換）
     /// https://imagingsolution.net/math/rotate-around-point/
     #[allow(dead_code)]
     fn rotate(&self, center: Point2, angle: Radian) -> Point2 {
-        Point2(
-            self.0 * angle.0.cos() - self.1 * angle.0.sin() + center.0 - center.0 * angle.0.cos()
-                + center.1 * angle.0.sin(),
-            self.0 * angle.0.sin() + self.1 * angle.0.cos() + center.1
-                - center.0 * angle.0.sin()
-                - center.1 * angle.0.cos(),
-        )
+        Point2 {
+            x: self.x * angle.0.cos() - self.y * angle.0.sin() + center.x
+                - center.x * angle.0.cos()
+                + center.y * angle.0.sin(),
+            y: self.x * angle.0.sin() + self.y * angle.0.cos() + center.y
+                - center.x * angle.0.sin()
+                - center.y * angle.0.cos(),
+        }
     }
 }
 
@@ -520,11 +539,11 @@ impl Polygon {
                 return PolygonPointContainment::On;
             }
 
-            if a.1 > b.1 {
+            if a.y > b.y {
                 std::mem::swap(&mut a, &mut b);
             }
 
-            if a.1 < EPS && EPS < b.1 && a.cross(b) > EPS {
+            if a.y < EPS && EPS < b.y && a.cross(b) > EPS {
                 x = !x;
             }
         }
@@ -548,9 +567,9 @@ impl Polygon {
         }
 
         list.sort_by(|a, b| {
-            a.0.partial_cmp(&b.0)
+            a.x.partial_cmp(&b.x)
                 .unwrap()
-                .then(a.1.partial_cmp(&b.1).unwrap())
+                .then(a.y.partial_cmp(&b.y).unwrap())
         });
 
         let mut upper = Vec::new();
