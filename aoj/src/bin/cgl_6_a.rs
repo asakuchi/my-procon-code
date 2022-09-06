@@ -1,18 +1,44 @@
-//!
-//! 幾何
-//!
-
 fn main() {
-    let p1 = Point2 { x: 1., y: 1. };
-    let p2 = Point2 { x: 2., y: 3. };
+    let n = input_usize();
 
-    println!("{:?}", p1 + p2);
-    println!("{:?}", p1 - p2);
-    println!("{:?}", p1 * 3.);
+    let mut list = Vec::new();
 
-    println!("{}", cos_formula(3., 4., 0.5 * std::f64::consts::PI,));
-    // println!("{:?}", rotate(1., 2., 3., 4., 0.5 * std::f64::consts::PI));
-    p1.rotate(Point2 { x: 0., y: 0. }, Degree(30.).to_radian());
+    for _ in 0..n {
+        let p = input_tuple();
+        list.push(p);
+    }
+
+    let result = EndPoint::manhattan_intersection(&list);
+    println!("{}", result);
+}
+
+fn input_usize() -> usize {
+    let stdin = std::io::stdin();
+
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
+
+    let n: usize = buf.parse().unwrap();
+
+    n
+}
+
+fn input_tuple() -> (IsizePoint2, IsizePoint2) {
+    let stdin = std::io::stdin();
+
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
+
+    let mut iter = buf.split_whitespace();
+
+    let v1: isize = iter.next().unwrap().parse().unwrap();
+    let v2: isize = iter.next().unwrap().parse().unwrap();
+    let v3: isize = iter.next().unwrap().parse().unwrap();
+    let v4: isize = iter.next().unwrap().parse().unwrap();
+
+    (IsizePoint2 { x: v1, y: v2 }, IsizePoint2 { x: v3, y: v4 })
 }
 
 // -----------------------------------------------------------------------
