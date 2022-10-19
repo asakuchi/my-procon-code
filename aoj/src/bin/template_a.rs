@@ -33,6 +33,21 @@ fn input_tuple() -> (usize, usize) {
     (n, m)
 }
 
+fn input_vec() -> Vec<usize> {
+    let stdin = std::io::stdin();
+
+    let mut buf = String::new();
+    stdin.read_line(&mut buf).unwrap();
+    buf = buf.trim_end().to_owned();
+
+    let iter = buf.split_whitespace();
+
+    let line: Vec<_> = iter.map(|x| x.parse().unwrap()).collect();
+
+    line
+}
+
+
 fn input_vec_2d(n: usize) -> Vec<Vec<isize>> {
     // 二次元ベクタ
 
