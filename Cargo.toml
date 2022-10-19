@@ -12,6 +12,7 @@ members = [
     "snippet",
     "aoj",
     "yukicoder",
+    "codeforces",
     "books",
     "work"
 ]
