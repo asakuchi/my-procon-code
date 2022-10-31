@@ -1,11 +1,7 @@
-use num_rational::Ratio;
 use proconio::input;
 
 const MOD: isize = 998244353;
 
-// WA
-
-// #[fastout]
 fn main() {
     input! {
         n: usize,
@@ -13,20 +9,19 @@ fn main() {
         k: usize,
     }
 
-    let mut dp = vec![Ratio::new(0, m as isize); n + 1];
+    let mut dp = vec![0; n + 1];
 
-    dp[0] = Ratio::new(1, 1);
+    dp[0] = 1;
 
-    let dice = Ratio::new(1, m as isize);
+    let dice = mod_inverse(m as isize, MOD) % MOD;
 
     // println!("init {:?}", dp);
 
-    let mut result_p = Ratio::new(0, m as isize);
+    let mut result_p = 0;
 
     for _l_count in 0..k {
-        let mut p = vec![Ratio::new(0, m as isize); n + 1];
+        let mut p = vec![0; n + 1];
         std::mem::swap(&mut dp, &mut p);
-        // p[0] = Ratio::new(1, 1);
 
         for i in 0..n {
             let source = p[i].clone();
@@ -37,18 +32,19 @@ fn main() {
                 let target = if i + j <= n { i + j } else { 2 * n - i - j };
 
                 dp[target] += source * dice;
+                dp[target] %= MOD;
             }
         }
 
         // println!("loop {} {:?}", l_count, dp);
 
         result_p += dp[n];
+        result_p %= MOD;
     }
 
     // println!("{:?}", result_p);
 
-    let result =
-        *result_p.numer() as isize % MOD * mod_inverse(*result_p.denom() as isize, MOD) % MOD;
+    let result = result_p;
 
     println!("{}", result);
 }
