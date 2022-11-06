@@ -49,6 +49,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ac-library-rs"
+version = "0.1.0"
+dependencies = [
+ "input",
+ "proconio",
+ "proconio-derive 0.2.1",
+ "rand",
+]
+
+[[package]]
 name = "agc"
 version = "0.1.0"
 dependencies = [
@@ -456,6 +466,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "input"
+version = "0.1.0"
+
+[[package]]
 name = "itertools"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -704,7 +718,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3bed4f95f88d84bb8efd51dbc080d463e6ca953f05dfade2e24daf19dd861ccd"
 dependencies = [
  "lazy_static",
- "proconio-derive",
+ "proconio-derive 0.1.9",
 ]
 
 [[package]]
@@ -716,6 +730,17 @@ dependencies = [
  "proc-macro2 0.4.30",
  "quote 0.6.13",
  "syn 0.15.44",
+]
+
+[[package]]
+name = "proconio-derive"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bccfa078f1a3db6563793531989799a2201d9bdf609f48dd82620b443fbcd409"
+dependencies = [
+ "proc-macro2 1.0.40",
+ "quote 1.0.20",
+ "syn 1.0.98",
 ]
 
 [[package]]
@@ -1071,6 +1096,7 @@ checksum = "8bc25de0a968755322a6b517a7257df7ec3216ed7907b8fc064906542f9714b3"
 name = "work"
 version = "0.1.0"
 dependencies = [
+ "ac-library-rs",
  "alga",
  "ascii",
  "bitset-fixed",

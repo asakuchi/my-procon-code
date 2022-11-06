@@ -81,3 +81,10 @@ use superslice::*;
 ```sh
 find work -name \*.rs | awk -F'/' '{ printf "cp -pr %s abc/src/bin/abc260_%s\n", $0, $4}' | zsh
 ```
+
+## ACL 利用
+
+```sh
+cd ac-library-rs
+python3 expand.py modint | pbcopy
+```
