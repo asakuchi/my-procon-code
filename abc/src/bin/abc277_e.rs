@@ -42,7 +42,7 @@ fn main() {
             if !visited[current][(!switch) as usize] {
                 visited[current][(!switch) as usize] = true;
                 steps[current][(!switch) as usize] = steps[current][switch as usize];
-                queue.push_back((current, (!switch)));
+                queue.push_front((current, (!switch)));
             }
         }
 
