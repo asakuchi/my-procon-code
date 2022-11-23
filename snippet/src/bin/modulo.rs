@@ -1,6 +1,8 @@
 const MAX_SIZE: usize = 510000;
 const MODULO: isize = 1_000_000_007;
 
+const MOD: usize = 1_000_000_007;
+
 fn main() {
     let mut fac = vec![0; MAX_SIZE];
     let mut finv = vec![0; MAX_SIZE];
@@ -11,6 +13,41 @@ fn main() {
     // nCk
     combination_init(&mut fac, &mut finv);
     println!("{}", combination(n, k, &fac, &finv));
+}
+
+fn mod_pow(x: usize, a: usize) -> usize {
+    if a == 1 {
+        return x;
+    }
+
+    if a % 2 == 1 {
+        return (x * mod_pow(x, a - 1)) % MOD;
+    }
+
+    let t = mod_pow(x, a / 2);
+
+    return (t * t) % MOD;
+}
+
+fn mod_inv(x: usize) -> usize {
+    return mod_pow(x, MOD - 2);
+}
+
+fn mod_perm(n: usize, k: usize) -> usize {
+    let mut ret = 1;
+
+    for i in 0..k {
+        ret = (ret * (n - i)) % MOD;
+    }
+
+    return ret;
+}
+
+fn mod_comb(n: usize, k: usize) -> usize {
+    let a = mod_perm(n, k);
+    let b = mod_perm(k, k);
+
+    return (a * mod_inv(b)) % MOD;
 }
 
 ///
@@ -55,6 +92,10 @@ fn mod_inverse(a: isize, m: isize) -> isize {
     u
 }
 
+///
+/// 組み合わせ 前処理
+/// n <= 10^7 まで
+///
 fn combination_init(fac: &mut Vec<isize>, finv: &mut Vec<isize>) {
     fac[0] = 1;
     fac[1] = 1;
@@ -71,6 +112,10 @@ fn combination_init(fac: &mut Vec<isize>, finv: &mut Vec<isize>) {
     }
 }
 
+///
+/// 組み合わせ
+/// n <= 10^7 まで
+///
 fn combination(n: isize, k: isize, fac: &Vec<isize>, finv: &Vec<isize>) -> isize {
     if n < k {
         return 0;
