@@ -6,6 +6,7 @@ version = 3
 name = "abc"
 version = "0.1.0"
 dependencies = [
+ "ac-library-rs",
  "alga",
  "ascii",
  "bitset-fixed",
