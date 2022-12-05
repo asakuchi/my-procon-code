@@ -882,6 +882,7 @@ checksum = "5c2fb2ec9bcd216a5b0d0ccf31ab17b5ed1d627960edff65bbe95d3ce221cefc"
 name = "snippet"
 version = "0.1.0"
 dependencies = [
+ "ac-library-rs",
  "alga",
  "ascii",
  "bitset-fixed",
