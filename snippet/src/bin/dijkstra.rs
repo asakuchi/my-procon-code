@@ -29,11 +29,6 @@ impl std::cmp::PartialOrd for Vertex {
     }
 }
 
-enum Directed {
-    Directed,
-    Undirected,
-}
-
 ///
 /// 単一始点最短経路
 /// ダイクストラ
@@ -44,18 +39,16 @@ fn main() {
     let _e = 5; // 辺の数
     let r = 0; // 始点
     let s_t_d = vec![(0, 1, 1), (0, 2, 4), (1, 2, 2), (2, 3, 1), (1, 3, 5)];
-    let direction = Directed::Directed;
     /* --------------------------------------------------- */
 
     // ある頂点からの辺と重み
-    let mut edge = vec![Vec::new(); v];
+    let mut list = vec![Vec::new(); v];
 
-    for (s, t, d) in &s_t_d {
-        edge[*s].push((*t, *d));
+    for &(s, t, d) in &s_t_d {
+        list[s].push((t, d));
 
-        if let direction = Directed::Undirected {
-            edge[*t].push((*s, *d));
-        }
+        // 無向グラフの場合
+        // list[t].push((s, d));
     }
 
     // 始点から各頂点までの最短コスト
@@ -69,23 +62,25 @@ fn main() {
     }));
 
     while let Some(Reverse(point)) = priority_queue.pop() {
-        let now = point.vertex_number;
-        let nowd = point.weight;
+        let current = point.vertex_number;
+        let current_cost = point.weight;
 
-        if costs[now] != nowd {
+        if costs[current] != current_cost {
             continue;
         }
 
-        for (edge_v, edge_d) in &edge[now] {
-            let nextd = nowd + *edge_d;
+        for &(next, edge_weight) in &list[current] {
+            let next_cost = current_cost + edge_weight;
 
-            if nextd >= costs[*edge_v] {
+            if next_cost >= costs[next] {
                 continue;
             }
-            costs[*edge_v] = nextd;
+
+            costs[next] = next_cost;
+
             priority_queue.push(Reverse(Vertex {
-                vertex_number: *edge_v,
-                weight: nextd,
+                vertex_number: next,
+                weight: next_cost,
             }));
         }
     }
