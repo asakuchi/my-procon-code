@@ -50,6 +50,24 @@ fn mod_comb(n: usize, k: usize) -> usize {
     return (a * mod_inv(b)) % MOD;
 }
 
+/**
+ * 重複組合せ
+ *
+ * https://www.geisya.or.jp/~mwm48961/kou2/s1combi5.htm
+ */
+fn mod_comb_with_repetition(n: usize, k: usize) -> usize {
+    mod_comb(n - 1 + k, n - 1)
+}
+
+/**
+ * 重複順列
+ *
+ * https://www.geisya.or.jp/~mwm48961/kou2/rep_permu.htm
+ */
+fn mod_perm_with_repetition(n: usize, k: usize) -> usize {
+    mod_pow(n, k)
+}
+
 ///
 /// 負の数にも対応した % 演算
 ///
