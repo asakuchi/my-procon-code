@@ -1,13 +1,12 @@
+use itertools::Itertools;
 use proconio::input;
 
 fn main() {
     input! {
-        k: u8,
+        k: usize,
     }
 
-    for c in 'A' as u8..'A' as u8 + k {
-        print!("{}", c as char);
-    }
+    let result = ('A'..='Z').take(k).join("");
 
-    println!();
+    println!("{}", result);
 }
