@@ -263,6 +263,27 @@ impl IsizePoint2 {
             y: self.x + self.y,
         }
     }
+
+    ///
+    /// マンハッタン距離の最大値
+    /// https://fukubutyo.web.fc2.com/Manhattan.html
+    ///
+    /// max(max(X) - min(X), max(Y) - min(Y))
+    /// ※ X: x+y, Y: x-y
+    ///
+    #[allow(dead_code)]
+    fn max_manhattan_distance(list: &Vec<IsizePoint2>) -> isize {
+        let x_y_45 = list.iter().map(|p| p.rotate_45());
+
+        let max_x: isize = x_y_45.clone().map(|p| p.x).max().unwrap();
+        let min_x: isize = x_y_45.clone().map(|p| p.x).min().unwrap();
+        let max_y: isize = x_y_45.clone().map(|p| p.y).max().unwrap();
+        let min_y: isize = x_y_45.clone().map(|p| p.y).min().unwrap();
+
+        let result = (max_x - min_x).max(max_y - min_y);
+
+        result
+    }
 }
 
 impl Point2 {
