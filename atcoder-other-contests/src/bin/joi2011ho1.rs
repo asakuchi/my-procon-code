@@ -1,3 +1,7 @@
+//!
+//! 二次元累積和
+//!
+
 use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 

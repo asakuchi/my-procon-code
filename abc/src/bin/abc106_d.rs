@@ -1,3 +1,7 @@
+//!
+//! 二次元累積和
+//!
+
 use proconio::input;
 
 fn main() {
@@ -9,25 +13,20 @@ fn main() {
         p_q: [(usize, usize); q],
     }
 
-    // 区間 [L,R] の列車の台数
-    let mut count = vec![vec![0; n + 1]; n + 1];
+    let mut s = vec![vec![0; n + 2]; n + 2];
 
-    for (l, r) in l_r {
-        count[l][r] += 1;
+    for &(l, r) in &l_r {
+        s[l][r] += 1;
     }
 
-    for l in 1..n + 1 {
-        for r in 2..n + 1 {
-            count[l][r] += count[l][r - 1];
+    for i in 0..=n {
+        for j in 0..=n {
+            s[i + 1][j + 1] += s[i + 1][j] + s[i][j + 1] - s[i][j];
         }
     }
 
-    for (p, q) in p_q {
-        let mut result = 0;
-
-        for l in p..q + 1 {
-            result += count[l][q];
-        }
+    for &(p, q) in &p_q {
+        let result = s[q][q] + s[p - 1][p - 1] - s[p - 1][q] - s[q][p - 1];
 
         println!("{}", result);
     }
