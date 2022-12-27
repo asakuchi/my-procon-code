@@ -22,6 +22,12 @@ fn main() {
     let factors = prime_factorize(207_900);
 
     println!("{:?}", factors);
+
+    let min_factor = pre_osa_k(MAX_NUM);
+    let primes_osa_k = osa_k(207_900, &min_factor);
+
+    // println!("{:?}", &min_factor[2..20]);
+    println!("{}", factors == primes_osa_k);
 }
 
 ///
@@ -107,6 +113,46 @@ fn prime_factorize(n: usize) -> Vec<usize> {
     }
 
     list
+}
+
+///
+/// 高速な素因数分解（前処理）
+///
+fn pre_osa_k(n: usize) -> Vec<usize> {
+    let mut min_factor: Vec<_> = (0..=n).collect();
+
+    let mut i = 2;
+
+    while i * i <= n {
+        if min_factor[i] == i {
+            for k in (i * 2..=n).step_by(i) {
+                if min_factor[k] > i {
+                    min_factor[k] = i;
+                }
+            }
+        }
+
+        i += 1;
+    }
+
+    min_factor
+}
+
+///
+/// 高速な素因数分解
+///
+fn osa_k(m: usize, min_factor: &Vec<usize>) -> Vec<usize> {
+    let mut k = m;
+
+    let mut primes = Vec::new();
+
+    while k >= 2 {
+        primes.push(min_factor[k]);
+
+        k /= min_factor[k];
+    }
+
+    primes
 }
 
 ///
