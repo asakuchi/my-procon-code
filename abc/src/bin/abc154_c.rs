@@ -1,30 +1,22 @@
-use proconio::fastout;
+use std::collections::HashSet;
+
 use proconio::input;
 
-#[fastout]
 fn main() {
     input! {
         n: usize,
-        k: usize,
-        p: [usize; n],
+        a: [usize; n],
     }
 
-    let mut s = vec![0.; n + 1];
+    let mut set = HashSet::with_capacity(n);
 
-    for i in 0..n {
-        let kitaiti = (1 + p[i]) as f64 / 2.;
-
-        s[i + 1] = s[i] + kitaiti;
+    for value in a {
+        set.insert(value);
     }
 
-    let mut max = 0.;
-
-    for i in k..n + 1 {
-        // println!("{}", s[i] - s[i - k]);
-        if s[i] - s[i - k] > max {
-            max = s[i] - s[i - k];
-        }
+    if set.len() == n {
+        println!("YES");
+    } else {
+        println!("NO");
     }
-
-    println!("{}", max);
 }
