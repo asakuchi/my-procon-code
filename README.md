@@ -82,9 +82,17 @@ use superslice::*;
 find work -name \*.rs | awk -F'/' '{ printf "cp -pr %s abc/src/bin/abc260_%s\n", $0, $4}' | zsh
 ```
 
-## ACL 利用
+<!-- ## ACL 利用
 
 ```sh
 cd ac-library-rs
 python3 expand.py modint | pbcopy
+``` -->
+
+## ACL や自作ライブラリを使うとき
+
+`a.rs` を提出する場合
+
+```sh
+cargo equip --bin a --exclude-atcoder-crates | pbcopy
 ```
