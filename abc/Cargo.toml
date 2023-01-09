@@ -107,6 +107,9 @@ smallvec = "=1.2.0"
 # AC Library
 ac-library-rs = { path = "../ac-library-rs" }
 
+# My Library
+procon-library-rs = { path = "../procon-library-rs" }
+
 # ---------------------------------------------------------------------
 
 [dev-dependencies]
