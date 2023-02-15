@@ -1,32 +1,67 @@
-use proconio::fastout;
 use proconio::input;
 
-#[fastout]
 fn main() {
     input! {
-        r1: isize,
-        c1: isize,
-        r2: isize,
-        c2: isize,
+        a: isize,
+        b: isize,
+        c: isize,
+        d: isize,
     }
 
-    if r1 == r2 && c1 == c2 {
+    if (a, b) == (c, d) {
         println!("0");
-    } else if r1 + c1 == r2 + c2 {
-        println!("1");
-    } else if r1 - c1 == r2 - c2 {
-        println!("1");
-    } else if (r1 - r2).abs() + (c1 - c2).abs() <= 3 {
-        println!("1");
-    } else if ((r1 - r2).abs() + (c1 - c2).abs()) % 2 == 0 {
-        println!("2");
-    } else if (r1 + c1 - (r2 + c2)).abs() <= 3 {
-        println!("2");
-    } else if (r1 - c1 - (r2 - c2)).abs() <= 3 {
-        println!("2");
-    } else if (r1 - r2).abs() + (c1 - c2).abs() <= 6 {
-        println!("2");
-    } else {
-        println!("3");
+        return;
     }
+
+    // 1 手
+    if one_hand(a, b, c, d) {
+        println!("1");
+        return;
+    }
+
+    // 2 手
+
+    // 5 * 5 の 25マスは1手で移動できるので、
+    // さらにそこから1手で移動できるか
+    for i in -2..=2 {
+        for j in -2..=2 {
+            if one_hand(a + i, b + j, c, d) {
+                println!("2");
+                return;
+            }
+        }
+    }
+
+    // 縦に3マス、横に3マスは1手で移動できるので、
+    // さらにそこから1手で移動できるか
+    for (i, j) in vec![(3, 0), (-3, 0), (0, 3), (0, -3)] {
+        if one_hand(a + i, b + j, c, d) {
+            println!("2");
+            return;
+        }
+    }
+
+    // 斜め2回で移動できるか
+    if ((a - c).abs() + (b - d).abs()) % 2 == 0 {
+        println!("2");
+        return;
+    }
+
+    println!("3");
+}
+
+fn one_hand(a: isize, b: isize, c: isize, d: isize) -> bool {
+    if (a - c).abs() + (b - d).abs() <= 3 {
+        return true;
+    }
+
+    if a + b == c + d {
+        return true;
+    }
+
+    if a - b == c - d {
+        return true;
+    }
+
+    false
 }
