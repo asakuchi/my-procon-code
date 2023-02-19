@@ -7,18 +7,16 @@ fn main() {
         a: [usize; n],
     }
 
-    let mut b_1 = a[1];
+    let mut all = 0;
 
-    for i in 2..n {
-        b_1 ^= a[i];
+    for i in 0..n {
+        all ^= a[i];
     }
-
-    let all_a = b_1 ^ a[0];
 
     let mut result = Vec::new();
 
-    for i in 0..n {
-        result.push(all_a ^ a[i]);
+    for &x in &a {
+        result.push(all ^ x);
     }
 
     let text = result.iter().format(" ");
