@@ -269,6 +269,7 @@ dependencies = [
  "ordered-float",
  "permutohedron",
  "petgraph",
+ "procon-library-rs",
  "proconio",
  "rand",
  "rand_chacha",
