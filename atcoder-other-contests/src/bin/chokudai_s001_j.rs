@@ -1,4 +1,4 @@
-use ::procon_library_rs::binary_indexed_tree::BinaryIndexedTree;
+use ac_library_rs::FenwickTree;
 use proconio::input;
 
 fn main() {
@@ -7,12 +7,12 @@ fn main() {
         a: [usize; n],
     }
 
-    let mut bit = BinaryIndexedTree::new(n + 1);
+    let mut bit = FenwickTree::new(n + 1, 0isize);
 
     let mut result = 0;
 
     for x in a {
-        result += bit.sum(n) - bit.sum(x);
+        result += bit.sum(x, n + 1);
 
         bit.add(x, 1);
     }
