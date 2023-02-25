@@ -15,6 +15,8 @@ use rand::seq::SliceRandom;
 // use std::collections::BinaryHeap;
 use std::time::Instant;
 
+use std::collections::BinaryHeap;
+
 #[derive(Copy, Clone, Debug)]
 enum ExcavationResult {
     /// 指定したセルの岩盤が破壊できなかった
@@ -137,14 +139,61 @@ fn main() {
         }
     }
 
-    let mut index_list: Vec<_> = (0..n * n).collect();
+    let mut directions = vec![(0, 1), (0, -1), (1, 0), (-1, 0)];
 
-    // Vecを適当な順番に
-    index_list.shuffle(&mut rng);
+    let mut queue = BinaryHeap::new();
 
-    // eprintln!("shuffle {:?}", index_list);
+    // 水源に近い方から叩く
+    for i in 0..w {
+        let (y, x) = water_source[i];
 
-    for index in index_list {
+        directions.shuffle(&mut rng);
+
+        for &direction in &directions {
+            let next_y = y as isize + direction.0;
+            let next_x = x as isize + direction.1;
+
+            if next_y < 0 || next_y >= n as isize || next_x < 0 || next_x >= n as isize {
+                continue;
+            }
+
+            let next_y = next_y as usize;
+            let next_x = next_x as usize;
+
+            if let CellStatus::Broken = grid[next_y][next_x].status {
+                continue;
+            }
+
+            queue.push((0, next_y, next_x));
+        }
+    }
+
+    // 家に近い方からも叩く
+    for i in 0..w {
+        let (y, x) = house[i];
+
+        directions.shuffle(&mut rng);
+
+        for &direction in &directions {
+            let next_y = y as isize + direction.0;
+            let next_x = x as isize + direction.1;
+
+            if next_y < 0 || next_y >= n as isize || next_x < 0 || next_x >= n as isize {
+                continue;
+            }
+
+            let next_y = next_y as usize;
+            let next_x = next_x as usize;
+
+            if let CellStatus::Broken = grid[next_y][next_x].status {
+                continue;
+            }
+
+            queue.push((0, next_y, next_x));
+        }
+    }
+
+    while let Some((count, y, x)) = queue.pop() {
         //
         // 水源でも家でもないセルは多いので、
         // このループは時間がかかる
@@ -156,9 +205,6 @@ fn main() {
             return;
         }
 
-        let y = index / n;
-        let x = index % n;
-
         if let CellType::Water = grid[y][x].cell_type {
             continue;
         }
@@ -168,29 +214,49 @@ fn main() {
         }
 
         if let CellStatus::Broken = grid[y][x].status {
-            panic!("あり得ない");
+            // panic!("あり得ない");
+            continue;
         }
 
         // eprintln!("cell {} {:?}", index, (y, x));
 
-        loop {
-            // 壊れるまでやる
+        let power = (c * 20).min(grid[y][x].estimated_hit_point);
+        grid[y][x].estimated_hit_point -= power;
 
-            // ×3 は時間がかかりすぎる
+        println!("power {} c {}", power, c);
 
-            let power = (c * 20).min(grid[y][x].estimated_hit_point);
-            grid[y][x].estimated_hit_point -= power;
+        let replay = query(y, x, power, &mut source);
 
-            let replay = query(y, x, power, &mut source);
+        match replay {
+            ExcavationResult::Complete | ExcavationResult::Illegal => return,
+            ExcavationResult::Broken => {
+                grid[y][x].status = CellStatus::Broken;
+                grid[y][x].estimated_hit_point = 0;
 
-            match replay {
-                ExcavationResult::Complete | ExcavationResult::Illegal => return,
-                ExcavationResult::Broken => {
-                    grid[y][x].status = CellStatus::Broken;
-                    grid[y][x].estimated_hit_point = 0;
-                    break;
+                // 壊れたら隣を候補に入れる
+                directions.shuffle(&mut rng);
+
+                for &direction in &directions {
+                    let next_y = y as isize + direction.0;
+                    let next_x = x as isize + direction.1;
+
+                    if next_y < 0 || next_y >= n as isize || next_x < 0 || next_x >= n as isize {
+                        continue;
+                    }
+
+                    let next_y = next_y as usize;
+                    let next_x = next_x as usize;
+
+                    if let CellStatus::Broken = grid[next_y][next_x].status {
+                        continue;
+                    }
+
+                    queue.push((0, next_y, next_x));
                 }
-                ExcavationResult::NotBreak => {}
+            }
+            ExcavationResult::NotBreak => {
+                // 壊れなかったら再度queueに入れる
+                queue.push((count + 1, y, x));
             }
         }
     }
