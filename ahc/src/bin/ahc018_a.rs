@@ -42,8 +42,25 @@ fn main() {
 
     let mut i = 0;
 
-    // 正の得点を得る解法
-    // 全部 5,000 のパワーで叩く
+    // とりあえず水源は全て壊す必要がある
+    for i in 0..w {
+        let (y, x) = water_source[i];
+
+        loop {
+            // 壊れるまでやる
+            let mut estimated_rest = 5_000;
+
+            let replay = query(i, j, 5_000, &mut source);
+
+            match replay {
+                ExcavationResult::Complete | ExcavationResult::Illegal => return,
+                ExcavationResult::Broken => {
+                    break;
+                }
+                ExcavationResult::NotBreak => {}
+            }
+        }
+    }
 
     for i in 0..n {
         for j in 0..n {
