@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use itertools::Itertools;
 use proconio::{input, marker::Usize1};
 
@@ -13,13 +11,9 @@ fn main() {
     let mut list = vec![Vec::new(); n];
     let mut indegree = vec![0; n];
 
-    let mut validator_set = vec![HashSet::new(); n];
-
     for &(x, y) in &x_y {
         list[x].push(y);
         indegree[y] += 1;
-
-        validator_set[x].insert(y);
     }
 
     let sorted = topological_sort(&list, &indegree, n);
