@@ -180,7 +180,7 @@ fn main() {
                 continue;
             }
 
-            queue.push((Reverse(0), next_y, next_x));
+            queue.push((Reverse(count + 1), next_y, next_x));
         }
     }
 }
