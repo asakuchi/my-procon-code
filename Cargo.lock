@@ -719,7 +719,6 @@ dependencies = [
 name = "procon-library-rs"
 version = "0.1.0"
 dependencies = [
- "ac-library-rs",
  "alga",
  "ascii",
  "bitset-fixed",
