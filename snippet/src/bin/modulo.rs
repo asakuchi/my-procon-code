@@ -17,7 +17,7 @@ fn main() {
 
 fn mod_pow(x: usize, a: usize) -> usize {
     if a == 1 {
-        return x;
+        return x % MOD;
     }
 
     if a % 2 == 1 {
