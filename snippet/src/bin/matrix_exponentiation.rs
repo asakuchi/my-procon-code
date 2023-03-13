@@ -43,5 +43,12 @@ fn mat_pow(x: usize, array2: &Array2<usize>, modulus: usize) -> Array2<usize> {
         t %= modulus;
     }
 
+    // 実数を扱う場合は誤差に注意
+    // // 正規化
+    // let p = t[(0, 0)];
+    // let p_not = t[(0, 1)];
+
+    // t *= 1. / (p + p_not);
+
     t
 }
