@@ -1,4 +1,8 @@
 //!
+//! 単一始点最短経路
+//!
+//! ダイクストラ
+//!
 //! AOJ では自作コードを使う
 //!
 
@@ -7,7 +11,7 @@ use std::cmp::Reverse;
 use std::collections::BinaryHeap;
 // use std::io;
 
-const INF: usize = 1_100_100_100_100_100_101;
+const INF: usize = 1_000_000_000_000_000_000;
 
 #[derive(Debug, Eq, PartialEq)]
 struct Vertex {
@@ -29,35 +33,31 @@ impl std::cmp::PartialOrd for Vertex {
     }
 }
 
-///
-/// 単一始点最短経路
-/// ダイクストラ
-///
 fn main() {
     // 入力値
-    let v = 4; // 頂点の数
-    let _e = 5; // 辺の数
-    let r = 0; // 始点
-    let s_t_d = vec![(0, 1, 1), (0, 2, 4), (1, 2, 2), (2, 3, 1), (1, 3, 5)];
+    let n = 4; // 頂点の数
+    let _m = 5; // 辺の数
+    let start = 0; // 始点
+    let u_v_w = vec![(0, 1, 1), (0, 2, 4), (1, 2, 2), (2, 3, 1), (1, 3, 5)];
     /* --------------------------------------------------- */
 
     // ある頂点からの辺と重み
-    let mut list = vec![Vec::new(); v];
+    let mut list = vec![Vec::new(); n];
 
-    for &(s, t, d) in &s_t_d {
-        list[s].push((t, d));
+    for &(u, v, w) in &u_v_w {
+        list[u].push((v, w));
 
         // 無向グラフの場合
         // list[t].push((s, d));
     }
 
     // 始点から各頂点までの最短コスト
-    let mut costs = vec![INF; v];
-    costs[r] = 0;
+    let mut costs = vec![INF; n];
+    costs[start] = 0;
 
     let mut priority_queue = BinaryHeap::new();
     priority_queue.push(Reverse(Vertex {
-        vertex_number: r,
+        vertex_number: start,
         weight: 0,
     }));
 
@@ -85,7 +85,7 @@ fn main() {
         }
     }
 
-    for i in 0..v {
+    for i in 0..n {
         if costs[i] == INF {
             println!("INF");
         } else {
