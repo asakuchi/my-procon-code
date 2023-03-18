@@ -55,6 +55,7 @@ name = "ac-library-rs"
 version = "0.1.0"
 dependencies = [
  "input",
+ "num-traits",
  "proconio",
  "proconio-derive 0.2.1",
  "rand",
@@ -372,6 +373,7 @@ version = "0.1.0"
 name = "edpc"
 version = "0.1.0"
 dependencies = [
+ "ac-library-rs",
  "alga",
  "ascii",
  "bitset-fixed",
@@ -399,6 +401,7 @@ dependencies = [
  "ordered-float",
  "permutohedron",
  "petgraph",
+ "procon-library-rs",
  "proconio",
  "rand",
  "rand_chacha",
