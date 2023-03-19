@@ -1,4 +1,5 @@
-use ahc::ahc019::{action_only_cubic::only_cubic, ahc019_input::Ahc019Input};
+use ahc::ahc019::action::only_cubic_outside::only_cubic_outside;
+use ahc::ahc019::ahc019_input::Ahc019Input;
 use proconio::{input, marker::Chars};
 
 ///
@@ -22,7 +23,11 @@ fn main() {
         r_2,
     };
 
-    let result = only_cubic(&input);
+    // 全て 1*1*1 のブロックを敷き詰める
+    // let result = only_cubic(&input);
+
+    // 外側だけ、1*1*1 のブロックを敷き詰める
+    let result = only_cubic_outside(&input);
 
     result.print(&input);
 }

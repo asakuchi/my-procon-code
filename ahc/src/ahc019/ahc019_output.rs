@@ -49,4 +49,8 @@ impl Ahc019Output {
         println!("{}", result_1.iter().format(" "));
         println!("{}", result_2.iter().format(" "));
     }
+
+    pub fn score(&self) -> usize {
+        10
+    }
 }

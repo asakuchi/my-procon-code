@@ -1,4 +1,4 @@
-use super::{ahc019_input::Ahc019Input, ahc019_output::Ahc019Output};
+use crate::ahc019::{ahc019_input::Ahc019Input, ahc019_output::Ahc019Output};
 
 ///
 /// 全て 1*1*1 のブロックを敷き詰める
