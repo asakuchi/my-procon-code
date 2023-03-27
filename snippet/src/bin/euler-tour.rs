@@ -23,7 +23,20 @@ fn main() {
 
     println!("{:?}", list);
 
-    let tour = EulerTour::new(n, m, &list);
+    let mut tour = EulerTour::new(n, m, &list);
+
+    for i in 0..n {
+        println!(
+            "根から頂点{}までのパスの重み {}",
+            i + 1,
+            // path_query_tree.prod(0, in_list[i] + 1)
+            tour.path_query(i),
+        );
+    }
+
+    println!();
+
+    tour.set_weight(3 - 1, 1000);
 
     for i in 0..n {
         println!(
@@ -44,6 +57,7 @@ enum EdgeDirection {
 struct EulerTour {
     path_query_tree: Segtree<Additive<isize>>,
     in_list: Vec<usize>,
+    out_list: Vec<usize>,
 }
 
 impl EulerTour {
@@ -98,6 +112,7 @@ impl EulerTour {
         EulerTour {
             path_query_tree,
             in_list,
+            out_list,
         }
     }
 
@@ -132,5 +147,13 @@ impl EulerTour {
     ///
     fn path_query(&self, v: usize) -> isize {
         self.path_query_tree.prod(0, self.in_list[v] + 1)
+    }
+
+    fn set_weight(&mut self, v: usize, w: isize) {
+        let target_in = self.in_list[v];
+        let target_out = self.out_list[v];
+
+        self.path_query_tree.set(target_in, w);
+        self.path_query_tree.set(target_out, -w);
     }
 }
