@@ -25,8 +25,19 @@ fn main() {
 
     println!("{} と {} の LCA {}", 4, 7, lca.lca(4 - 1, 7 - 1) + 1);
     println!("{} と {} の LCA {}", 8, 6, lca.lca(8 - 1, 6 - 1) + 1);
-    println!("{} と {} の LCA {}", 6, 8, lca.lca(6 - 1, 8 - 1) + 1);
     println!("{} と {} の LCA {}", 5, 8, lca.lca(5 - 1, 8 - 1) + 1);
+
+    assert_eq!(lca.lca(4 - 1, 7 - 1) + 1, 2);
+    assert_eq!(lca.lca(8 - 1, 6 - 1) + 1, 1);
+    assert_eq!(lca.lca(5 - 1, 8 - 1) + 1, 5);
+
+    // reverse
+    assert_eq!(lca.lca(7 - 1, 4 - 1) + 1, 2);
+
+    // same
+    for i in 0..n {
+        assert_eq!(lca.lca(i, i), i);
+    }
 }
 
 pub struct DepthIndexMin;
@@ -36,7 +47,7 @@ impl Monoid for DepthIndexMin {
     type S = (usize, usize);
 
     fn identity() -> Self::S {
-        (usize::MAX, 0)
+        (std::usize::MAX, 0)
     }
 
     ///
@@ -48,11 +59,6 @@ impl Monoid for DepthIndexMin {
 }
 
 struct Lca {
-    // n: usize,
-    // m: usize,
-    // list: Vec<Vec<usize>>,
-    vs: Vec<usize>,
-    // depth: Vec<usize>,
     id: Vec<usize>,
     lca_tree: Segtree<DepthIndexMin>,
 }
@@ -67,9 +73,6 @@ impl Lca {
         visited[0] = true;
 
         Self::pre_lca(n, m, &list, 0, 0, &mut visited, &mut vs, &mut depth);
-
-        // println!("vs   : {:?}", vs);
-        // println!("depth: {:?}", depth);
 
         // 各頂点vに対し、最初にvsに現れるindex
         let mut id = vec![0; n];
@@ -88,23 +91,13 @@ impl Lca {
             id[v] = i;
         }
 
-        // println!("id   : {:?}", id);
-
         let mut lca_tree = Segtree::<DepthIndexMin>::new(vs.len());
 
         for i in 0..vs.len() {
-            lca_tree.set(i, (depth[i], i));
+            lca_tree.set(i, (depth[i], vs[i]));
         }
 
-        Lca {
-            // n,
-            // m,
-            // list: list.clone(),
-            vs,
-            // depth,
-            id,
-            lca_tree,
-        }
+        Lca { id, lca_tree }
     }
 
     fn pre_lca(
@@ -120,8 +113,6 @@ impl Lca {
         vs.push(current_vertex);
         depth.push(current_depth);
 
-        // println!("in current: {} depth: {}", current_vertex, current_depth);
-
         for &next in list[current_vertex].iter() {
             if visited[next] {
                 continue;
@@ -133,19 +124,10 @@ impl Lca {
 
             vs.push(current_vertex);
             depth.push(current_depth);
-
-            // println!("back current: {} depth: {}", current_vertex, current_depth);
         }
     }
 
-    pub fn lca(
-        &self,
-        // vs: &Vec<usize>,
-        // id: &Vec<usize>,
-        // lca_tree: &Segtree<DepthIndexMin>,
-        u: usize,
-        v: usize,
-    ) -> usize {
+    pub fn lca(&self, u: usize, v: usize) -> usize {
         // swap
         let (u, v) = if self.id[u] < self.id[v] {
             (u, v)
@@ -153,8 +135,8 @@ impl Lca {
             (v, u)
         };
 
-        let index = self.lca_tree.prod(self.id[u], self.id[v] + 1).1;
+        let lca_vertex = self.lca_tree.prod(self.id[u], self.id[v] + 1).1;
 
-        self.vs[index]
+        lca_vertex
     }
 }
