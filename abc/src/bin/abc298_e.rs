@@ -11,39 +11,47 @@ fn main() {
         q: usize,
     }
 
-    let mut result = mint::from(0);
+    let mut dp = vec![vec![vec![None; 2]; n + 1]; n + 1];
 
-    // n 回 振れば必ずゴールする
-
-    let mut taka = vec![mint::from(0); n + 1];
-    let mut aoki = vec![mint::from(0); n + 1];
-
-    taka[a] = mint::from(1);
-    aoki[b] = mint::from(1);
-
-    for _ in 0..n {
-        let mut next_taka = vec![mint::from(0); n + 1];
-        let mut next_aoki = vec![mint::from(0); n + 1];
-
-        for i in 0..=n {
-            for j in 1..=p {
-                next_taka[(i + j).min(n)] += taka[i] / mint::from(p);
-            }
-        }
-
-        result += next_taka[n] * (mint::from(1) - aoki[n]);
-
-        next_taka[n] = mint::from(0);
-
-        for i in 0..=n {
-            for j in 1..=q {
-                next_aoki[(i + j).min(n)] += aoki[i] / mint::from(q);
-            }
-        }
-
-        taka = next_taka;
-        aoki = next_aoki;
-    }
+    let result = rec(n, p, q, a, b, true, &mut dp);
 
     println!("{}", result);
+}
+
+fn rec(
+    n: usize,
+    p: usize,
+    q: usize,
+    taka: usize,
+    aoki: usize,
+    taka_turn: bool,
+    dp: &mut Vec<Vec<Vec<Option<mint>>>>,
+) -> mint {
+    if taka == n && aoki < n {
+        return mint::from(1);
+    }
+
+    if aoki == n {
+        return mint::from(0);
+    }
+
+    if let Some(value) = dp[taka][aoki][taka_turn as usize] {
+        return value;
+    }
+
+    let mut result = mint::from(0);
+
+    if taka_turn {
+        for i in 1..=p {
+            result += rec(n, p, q, (taka + i).min(n), aoki, false, dp) / mint::from(p);
+        }
+    } else {
+        for i in 1..=q {
+            result += rec(n, p, q, taka, (aoki + i).min(n), true, dp) / mint::from(q);
+        }
+    }
+
+    dp[taka][aoki][taka_turn as usize] = Some(result);
+
+    result
 }
