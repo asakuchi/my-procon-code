@@ -25,7 +25,7 @@ fn solve(n: usize, k: usize, a: &Vec<usize>, x: &Vec<usize>) {
         xor ^= grundy(k, &a, x[i], &mut memo);
     }
 
-    if xor == 0 {
+    if xor != 0 {
         println!("Alice");
     } else {
         println!("Bob");
@@ -45,13 +45,13 @@ fn grundy(k: usize, a: &Vec<usize>, x: usize, memo: &mut Vec<Option<usize>>) -> 
 
     for i in 0..k {
         if x >= a[i] {
-            set.insert(x - a[i]);
+            set.insert(grundy(k, a, x - a[i], memo));
         }
     }
 
     let mut g = 0;
 
-    while !set.contains(&g) {
+    while set.contains(&g) {
         g += 1;
     }
 
