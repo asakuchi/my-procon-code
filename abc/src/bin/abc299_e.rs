@@ -36,12 +36,6 @@ fn main() {
         p_d: [(Usize1, usize); k],
     }
 
-    if k == 0 {
-        println!("Yes");
-        println!("1{}", "0".repeat(n - 1));
-        return;
-    }
-
     let mut list = vec![Vec::new(); n];
 
     for &(u, v) in &u_v {
@@ -49,12 +43,7 @@ fn main() {
         list[v].push(u);
     }
 
-    let mut requirement = vec![None; n];
-
-    for &(p, d) in &p_d {
-        requirement[p] = Some(d);
-    }
-
+    // 最初は全部黒
     let mut result = vec![1; n];
 
     for &(p, d) in &p_d {
@@ -157,8 +146,6 @@ fn main() {
             return;
         }
     }
-
-    // println!("Yes");
 
     let text = result.iter().format("");
 
