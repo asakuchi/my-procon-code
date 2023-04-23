@@ -1,31 +1,7 @@
+use std::collections::VecDeque;
+
 use itertools::Itertools;
 use proconio::{input, marker::Usize1};
-use std::cmp::Ordering;
-use std::cmp::Reverse;
-use std::collections::BinaryHeap;
-// use std::io;
-
-const INF: usize = 1_000_000_000_000_000_000;
-
-#[derive(Debug, Eq, PartialEq)]
-struct Vertex {
-    /// 重み
-    weight: usize,
-    /// 頂点番号
-    vertex_number: usize,
-}
-
-impl Ord for Vertex {
-    fn cmp(&self, other: &Self) -> Ordering {
-        self.weight.cmp(&other.weight)
-    }
-}
-
-impl std::cmp::PartialOrd for Vertex {
-    fn partial_cmp(&self, other: &Vertex) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
 
 fn main() {
     input! {
@@ -43,114 +19,72 @@ fn main() {
         list[v].push(u);
     }
 
-    // 最初は全部黒
+    // 全て黒にする
     let mut result = vec![1; n];
 
+    // 白に色付け
     for &(p, d) in &p_d {
-        // 始点から各頂点までの最短コスト
-        let mut costs = vec![INF; n];
-        costs[p] = 0;
+        let mut visited = vec![false; n];
 
-        let mut priority_queue = BinaryHeap::new();
-        priority_queue.push(Reverse(Vertex {
-            vertex_number: p,
-            weight: 0,
-        }));
+        let mut queue = VecDeque::new();
+        queue.push_back((p, 0));
+        visited[p] = true;
 
-        while let Some(Reverse(point)) = priority_queue.pop() {
-            let current = point.vertex_number;
-            let current_cost = point.weight;
-
-            if costs[current] != current_cost {
-                continue;
-            }
-
-            // 探しているコスト
-            if costs[current] < d {
-                // d 以内に黒がいてはいけない
+        while let Some((current, length)) = queue.pop_front() {
+            if length < d {
+                // d以内は白でないとダメ
                 result[current] = 0;
+            } else {
+                break;
             }
 
-            // for &(next, edge_weight) in &list[current] {
-            for &next in &list[current] {
-                // 重みは常に1とする
-                let edge_weight = 1;
-
-                let next_cost = current_cost + edge_weight;
-
-                if next_cost >= costs[next] {
+            for &next in list[current].iter() {
+                if visited[next] {
                     continue;
                 }
 
-                costs[next] = next_cost;
-
-                priority_queue.push(Reverse(Vertex {
-                    vertex_number: next,
-                    weight: next_cost,
-                }));
+                // 次へ
+                visited[next] = true;
+                queue.push_back((next, length + 1));
             }
         }
     }
 
+    // 条件を満たすかチェック
     for &(p, d) in &p_d {
-        // 始点から各頂点までの最短コスト
-        let mut costs = vec![INF; n];
-        costs[p] = 0;
+        let mut visited = vec![false; n];
 
-        let mut priority_queue = BinaryHeap::new();
-        priority_queue.push(Reverse(Vertex {
-            vertex_number: p,
-            weight: 0,
-        }));
+        let mut queue = VecDeque::new();
+        queue.push_back((p, 0));
+        visited[p] = true;
 
         let mut ok = false;
 
-        while let Some(Reverse(point)) = priority_queue.pop() {
-            let current = point.vertex_number;
-            let current_cost = point.weight;
-
-            if costs[current] != current_cost {
-                continue;
-            }
-
-            // 探しているコスト
-            if costs[current] == d {
+        while let Some((current, length)) = queue.pop_front() {
+            if length == d {
                 if result[current] == 1 {
                     ok = true;
+                    break;
                 }
             }
 
-            // for &(next, edge_weight) in &list[current] {
-            for &next in &list[current] {
-                // 重みは常に1とする
-                let edge_weight = 1;
-
-                let next_cost = current_cost + edge_weight;
-
-                if next_cost >= costs[next] {
+            for &next in list[current].iter() {
+                if visited[next] {
                     continue;
                 }
 
-                costs[next] = next_cost;
-
-                priority_queue.push(Reverse(Vertex {
-                    vertex_number: next,
-                    weight: next_cost,
-                }));
+                // 次へ
+                visited[next] = true;
+                queue.push_back((next, length + 1));
             }
         }
 
         if !ok {
-            // 塗る方法がない
             println!("No");
             return;
         }
     }
 
-    let text = result.iter().format("");
-
-    let text = text.to_string();
-
     println!("Yes");
-    println!("{}", text);
+    println!("{}", result.iter().format(""));
 }
