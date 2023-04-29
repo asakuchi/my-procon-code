@@ -1,3 +1,7 @@
+//!
+//! しゃくとり法
+//!
+
 use proconio::fastout;
 use proconio::input;
 
