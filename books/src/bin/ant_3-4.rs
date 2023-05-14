@@ -37,11 +37,33 @@ fn main() {
         }
     }
 
+    // ------- メモ化再帰 -------
+
     let mut dp = vec![vec![None; MAX_N]; 1 << MAX_N];
 
     let result = rec(n, &costs, 0, 0, &mut dp);
 
     println!("{}", result);
+
+    // ------- 漸化式 -------
+
+    let mut dp = vec![vec![INF; MAX_N]; 1 << MAX_N];
+
+    dp[(1 << n) - 1][0] = 0;
+
+    for s in (0..=(1 << n) - 2).rev() {
+        for v in 0..n {
+            for u in 0..n {
+                if s >> u & 1 > 0 {
+                    continue;
+                }
+
+                dp[s][v] = dp[s][v].min(dp[s | 1 << u][u] + costs[v][u]);
+            }
+        }
+    }
+
+    println!("{}", dp[0][0]);
 }
 
 fn rec(
