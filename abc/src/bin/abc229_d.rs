@@ -1,45 +1,45 @@
-use proconio::fastout;
-use proconio::input;
-use proconio::marker::Chars;
+//!
+//! しゃくとり法
+//!
 
-#[fastout]
+use std::collections::VecDeque;
+
+use proconio::{input, marker::Chars};
+
 fn main() {
     input! {
         s: Chars,
         k: usize,
     }
 
-    let mut sum = vec![0; s.len() + 1];
-    sum[0] = 0;
-
-    for i in 0..s.len() {
-        sum[i + 1] = sum[i];
-
-        if s[i] == '.' {
-            sum[i + 1] += 1;
-        }
-    }
-
-    // println!("{:?}", sum);
-
-    let mut s = 0;
-    let mut t = 1;
-
     let mut result = 0;
+    let mut list = VecDeque::new();
 
-    loop {
-        // println!("pre {} {}", s, t);
-        while t != sum.len() && sum[t] - sum[s] <= k {
-            t += 1;
+    let mut dot = 0;
+    let mut cross = 0;
+
+    for value in s {
+        list.push_back(value);
+
+        if value == '.' {
+            dot += 1;
+        } else {
+            cross += 1;
         }
-        // println!("post {} {}", s, t);
-        result = std::cmp::max(result, t - s - 1);
 
-        if t == sum.len() {
-            break;
+        while dot > k {
+            if let Some(left) = list.pop_front() {
+                if left == '.' {
+                    dot -= 1;
+                } else {
+                    cross -= 1;
+                }
+            } else {
+                break;
+            }
         }
 
-        s += 1;
+        result = result.max(cross + dot);
     }
 
     println!("{}", result);
