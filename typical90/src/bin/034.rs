@@ -1,8 +1,5 @@
-//!
-//! しゃくとり法
-//!
-
 use std::collections::HashMap;
+use std::collections::VecDeque;
 
 use proconio::input;
 
@@ -13,40 +10,41 @@ fn main() {
         a: [usize; n],
     }
 
+    let mut result = 0;
+    let mut list = VecDeque::new();
+
     let mut map = HashMap::new();
-
-    let mut answer = 0;
-
     let mut variables = 0;
 
-    let mut r = 0;
+    for (right, &right_value) in a.iter().enumerate() {
+        list.push_back((right, right_value));
 
-    for l in 0..n {
-        while r < n {
-            let count = map.entry(a[r]).or_insert(0);
-
-            if *count == 0 && variables == k {
-                break;
-            }
-
-            if *count == 0 {
-                variables += 1;
-            }
-
-            *count += 1;
-            r += 1;
-        }
-
-        answer = answer.max(r - l);
-
-        let count = map.entry(a[l]).or_insert(0);
-
-        *count -= 1;
+        let count = map.entry(right_value).or_insert(0);
 
         if *count == 0 {
-            variables -= 1;
+            variables += 1;
         }
+
+        *count += 1;
+
+        while variables > k {
+            if let Some((left, left_value)) = list.pop_front() {
+                let count = map.entry(left_value).or_insert(0);
+
+                *count -= 1;
+
+                if *count == 0 {
+                    variables -= 1;
+                }
+            } else {
+                break;
+            }
+        }
+
+        // println!("{:?}", list);
+
+        result = result.max(list.len());
     }
 
-    println!("{}", answer);
+    println!("{}", result);
 }
