@@ -10,11 +10,7 @@ fn main() {
     let mut list = vec![Vec::new(); n];
 
     for i in 0..n {
-        for j in 0..n {
-            if i == j {
-                continue;
-            }
-
+        for j in i + 1..n {
             let mut diff = 0;
 
             for k in 0..m {
@@ -35,18 +31,7 @@ fn main() {
 
         visited[i] = true;
 
-        rec(n, &list, i, &mut visited);
-
-        let mut ok = true;
-
-        for j in 0..n {
-            if !visited[j] {
-                ok = false;
-                break;
-            }
-        }
-
-        if ok {
+        if rec(n, &list, i, &mut visited) {
             println!("Yes");
             return;
         }
@@ -55,7 +40,20 @@ fn main() {
     println!("No");
 }
 
-fn rec(n: usize, list: &Vec<Vec<usize>>, current: usize, visited: &mut Vec<bool>) {
+fn rec(n: usize, list: &Vec<Vec<usize>>, current: usize, visited: &mut Vec<bool>) -> bool {
+    let mut ok = true;
+
+    for i in 0..n {
+        if !visited[i] {
+            ok = false;
+            break;
+        }
+    }
+
+    if ok {
+        return true;
+    }
+
     for &next in list[current].iter() {
         if visited[next] {
             continue;
@@ -63,6 +61,12 @@ fn rec(n: usize, list: &Vec<Vec<usize>>, current: usize, visited: &mut Vec<bool>
 
         visited[next] = true;
 
-        rec(n, list, next, visited);
+        if rec(n, list, next, visited) {
+            return true;
+        }
+
+        visited[next] = false;
     }
+
+    false
 }
