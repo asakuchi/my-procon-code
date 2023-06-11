@@ -158,6 +158,8 @@ fn osa_k(m: usize, min_factor: &Vec<usize>) -> Vec<usize> {
 ///
 /// 約数列挙
 ///
+/// N=10^6でK=240、N=10^9でK=1344、N=10^12でK=6720
+///
 fn divisors(n: usize) -> Vec<usize> {
     let mut list = Vec::new();
 
