@@ -1,6 +1,86 @@
 use std::collections::BTreeSet;
+use std::ops::Bound::*;
+use std::ops::RangeBounds;
 
 use proconio::{input, marker::Usize1};
+
+struct MultiSet {
+    uniq_index: usize,
+}
+
+impl<'a> MultiSet {
+    fn new() -> MultiSet {
+        MultiSet { uniq_index: 0 }
+    }
+
+    fn range<R>(
+        &self,
+        set: &'a BTreeSet<(usize, usize)>,
+        range: R,
+    ) -> impl Iterator<Item = usize> + 'a
+    where
+        // K: Ord + ?Sized,
+        // T: Borrow<K> + Ord,
+        R: RangeBounds<usize>,
+    {
+        let range_from = |start| set.range((start, 0)..);
+        let range_to = |end| set.range(..(end, std::usize::MAX));
+        let range_both = |start, end| set.range((start, 0)..(end, std::usize::MAX));
+
+        let iter = match (range.start_bound(), range.end_bound()) {
+            // Included と Excluded は区別する必要なし
+            (Unbounded, Unbounded) => set.range(..),
+            (Included(&start_value), Unbounded) => range_from(start_value),
+            (Excluded(&start_value), Unbounded) => range_from(start_value),
+            (Unbounded, Included(&end_value)) => range_to(end_value),
+            (Unbounded, Excluded(&end_value)) => range_to(end_value),
+            (Included(&start_value), Included(&end_value)) => range_both(start_value, end_value),
+            (Included(&start_value), Excluded(&end_value)) => range_both(start_value, end_value),
+            (Excluded(&start_value), Included(&end_value)) => range_both(start_value, end_value),
+            (Excluded(&start_value), Excluded(&end_value)) => range_both(start_value, end_value),
+        };
+
+        iter.map(|&(x, _)| x)
+        // iter
+    }
+
+    fn insert(&mut self, set: &mut BTreeSet<(usize, usize)>, value: usize) -> bool {
+        self.uniq_index += 1;
+        set.insert((value, self.uniq_index))
+    }
+
+    fn inner_find(
+        &self,
+        set: &'a BTreeSet<(usize, usize)>,
+        value: usize,
+    ) -> Option<&'a (usize, usize)> {
+        set.range((value, 0)..=(value, std::usize::MAX)).next()
+    }
+
+    fn remove(&mut self, set: &mut BTreeSet<(usize, usize)>, value: usize) -> bool {
+        if let Some(&find_data) = self.inner_find(set, value) {
+            set.remove(&find_data)
+        } else {
+            false
+        }
+    }
+
+    fn get(&self, set: &BTreeSet<(usize, usize)>, value: usize) -> Option<usize> {
+        if let Some(&(inner_value, _)) = self.inner_find(set, value) {
+            Some(inner_value)
+        } else {
+            None
+        }
+    }
+
+    fn contains(&self, set: &BTreeSet<(usize, usize)>, value: usize) -> bool {
+        if let Some(_) = self.inner_find(set, value) {
+            true
+        } else {
+            false
+        }
+    }
+}
 
 #[proconio::fastout]
 fn main() {
@@ -18,13 +98,15 @@ fn main() {
     let mut upper_value = BTreeSet::new();
     let mut lower_value = BTreeSet::new();
 
-    for i in 0..k {
+    let mut multi = MultiSet::new();
+
+    for _ in 0..k {
         // 暫定的に先頭k項を上位にする
-        upper_value.insert((0, i));
+        multi.insert(&mut upper_value, 0);
     }
 
-    for i in k..n {
-        lower_value.insert((0, i));
+    for _ in k..n {
+        multi.insert(&mut lower_value, 0);
     }
 
     for q_i in 0..q {
@@ -37,40 +119,34 @@ fn main() {
         // f(A) を出す
 
         // old_valueが上位にいるなら更新
-        if let Some(&(_value, i)) = upper_value
-            .range((old_value, 0)..=(old_value, std::usize::MAX))
-            .next()
-        {
-            upper_value.remove(&(old_value, i));
+        if multi.contains(&upper_value, old_value) {
+            multi.remove(&mut upper_value, old_value);
 
             // 暫定的に入れる
-            lower_value.insert((y, n + q_i));
+            multi.insert(&mut lower_value, y);
 
-            if let Some(&(next_value, next_i)) = lower_value.iter().last() {
-                upper_value.insert((next_value, next_i));
-                lower_value.remove(&(next_value, next_i));
+            if let Some(&(next_value, _)) = lower_value.iter().last() {
+                multi.insert(&mut upper_value, next_value);
+                multi.remove(&mut lower_value, next_value);
 
                 top_k -= old_value;
                 top_k += next_value;
             }
         } else {
             // 下位にいるはずなので更新
-            if let Some(&(target_value, target_i)) = lower_value
-                .range((old_value, 0)..=(old_value, std::usize::MAX))
-                .next()
-            {
-                lower_value.remove(&(target_value, target_i));
-            }
+            multi.remove(&mut lower_value, old_value);
 
             // 新しい値は上位にいるべきか
-            if let Some(&(less_value, less_i)) = upper_value.range(..(y, std::usize::MAX)).next() {
+            let option = multi.range(&upper_value, ..y).next();
+
+            if let Some(less_value) = option {
                 // 下位 -> 上位
 
-                upper_value.insert((y, n + q_i));
+                multi.insert(&mut upper_value, y);
 
                 // 繰り下がり
-                upper_value.remove(&(less_value, less_i));
-                lower_value.insert((less_value, less_i));
+                multi.remove(&mut upper_value, less_value);
+                multi.insert(&mut lower_value, less_value);
 
                 top_k -= less_value;
                 top_k += y;
@@ -78,7 +154,7 @@ fn main() {
                 // 下位 -> 下位
 
                 // 下位のまま
-                lower_value.insert((y, n + q_i));
+                multi.insert(&mut lower_value, y);
 
                 // このパターンはtop_kの更新なし
             }
