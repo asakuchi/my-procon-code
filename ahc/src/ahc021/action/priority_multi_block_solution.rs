@@ -1,5 +1,5 @@
 use std::{
-    collections::{BinaryHeap, HashMap, VecDeque},
+    collections::{HashMap, VecDeque},
     time::Instant,
 };
 
@@ -54,13 +54,13 @@ pub fn priority_multi_block_solution(input: &Ahc021Input) -> Ahc021Output {
                 // OK
             } else if ball < blocks_ball[block] {
                 // 下にいすぎ
-                let index = blocks_ball.lower_bound(&ball);
+                let _index = blocks_ball.lower_bound(&ball);
 
                 queue.push_back(ball);
                 // queue.push(((block as isize - index as isize).abs(), ball));
             } else if ball >= blocks_ball[block + 1] {
                 // 上にいすぎ
-                let index = blocks_ball.lower_bound(&ball);
+                let _index = blocks_ball.lower_bound(&ball);
 
                 queue.push_back(ball);
                 // queue.push(((block as isize - index as isize).abs(), ball));

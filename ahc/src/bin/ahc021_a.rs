@@ -1,6 +1,7 @@
 // use ahc::ahc021::action::block_solution::block_solution;
 // use ahc::ahc021::action::multi_block_solution::multi_block_solution;
-use ahc::ahc021::action::priority_multi_block_solution::priority_multi_block_solution;
+// use ahc::ahc021::action::priority_multi_block_solution::priority_multi_block_solution;
+use ahc::ahc021::action::after_contest::after_contest;
 use ahc::ahc021::ahc021_input::Ahc021Input;
 use proconio::input;
 
@@ -28,7 +29,8 @@ fn main() {
     // let result = first_solution(&input);
     // let result = block_solution(&input);
     // let result = multi_block_solution(&input);
-    let result = priority_multi_block_solution(&input);
+    // let result = priority_multi_block_solution(&input);
+    let result = after_contest(&input);
 
     result.print(&input);
 }
