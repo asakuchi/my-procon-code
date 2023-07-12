@@ -19,16 +19,15 @@ fn main() {
 
     let mut result = mint::from(0);
 
+    let mut dist = vec![0; n];
+    rec(n, &list, 0, 0, 0, &mut dist);
+
     for bit in 0..60 {
-        let mut dist = vec![0; n];
-
-        rec(n, &list, bit, 0, 0, 0, &mut dist);
-
         let mut one = 0;
         let mut zero = 0;
 
         for i in 0..n {
-            if dist[i] == 1 {
+            if dist[i] & 1 << bit > 0 {
                 one += 1;
             } else {
                 zero += 1;
@@ -44,7 +43,6 @@ fn main() {
 fn rec(
     n: usize,
     list: &Vec<Vec<(usize, usize)>>,
-    bit: usize,
     current: usize,
     parent: usize,
     total: usize,
@@ -57,14 +55,6 @@ fn rec(
             continue;
         }
 
-        rec(
-            n,
-            list,
-            bit,
-            next,
-            current,
-            total ^ if weight & (1 << bit) > 0 { 1 } else { 0 },
-            dist,
-        );
+        rec(n, list, next, current, total ^ weight, dist);
     }
 }
