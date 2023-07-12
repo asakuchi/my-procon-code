@@ -94,5 +94,7 @@ python3 expand.py modint | pbcopy
 `a.rs` を提出する場合
 
 ```sh
-cargo equip --exclude-atcoder-crates --minify libs --remove docs --remove comments --bin a | pbcopy
+equip_files() {
+    cargo equip --exclude-atcoder-crates --minify libs --remove docs --remove comments --bin $1 | pbcopy
+}
 ```
