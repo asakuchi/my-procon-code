@@ -31,33 +31,14 @@ fn main() {
                 continue;
             }
 
-            if list[i].0 < list[j].0 {
+            let (price_i, func_i) = &list[i];
+            let (price_j, func_j) = &list[j];
+
+            if !(price_i >= price_j && func_j.is_superset(func_i)) {
                 continue;
             }
 
-            let mut ok = true;
-
-            for &f_i in list[i].1.iter() {
-                if !list[j].1.contains(&f_i) {
-                    ok = false;
-                    break;
-                }
-            }
-
-            if !ok {
-                continue;
-            }
-
-            let mut found = false;
-
-            for &f_j in list[j].1.iter() {
-                if !list[i].1.contains(&f_j) {
-                    found = true;
-                    break;
-                }
-            }
-
-            if list[i].0 > list[j].0 || found {
+            if price_i > price_j || func_i.len() < func_j.len() {
                 println!("Yes");
                 return;
             }
