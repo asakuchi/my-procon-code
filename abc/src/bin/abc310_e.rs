@@ -6,15 +6,10 @@ fn main() {
         s: Chars,
     }
 
-    let mut a = Vec::new();
-
-    for c in s {
-        if c == '1' {
-            a.push(1);
-        } else {
-            a.push(0);
-        }
-    }
+    let a: Vec<_> = s
+        .into_iter()
+        .map(|c| if c == '1' { 1 } else { 0 })
+        .collect();
 
     // dp[j][k]
     // f(i, j) = k になるiの個数(1<=i<=j)
