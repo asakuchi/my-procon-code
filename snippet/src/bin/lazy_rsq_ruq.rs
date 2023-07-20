@@ -7,45 +7,89 @@
 
 use ac_library_rs::{LazySegtree, MapMonoid, Monoid};
 
-const ID: isize = 1_000_000_000_000_000;
+#[derive(Clone)]
+struct Data {
+    value: isize,
+    size: usize,
+}
 
 struct Sum;
 
 impl Monoid for Sum {
-    type S = (isize, usize);
+    ///
+    /// モノイドの型
+    ///
+    type S = Data;
 
+    ///
+    /// 単位元
+    ///
     fn identity() -> Self::S {
-        (0, 0)
+        Data { value: 0, size: 0 }
     }
 
-    fn binary_operation(&(a, n): &Self::S, &(b, m): &Self::S) -> Self::S {
-        (a + b, n + m)
+    ///
+    /// 二項演算
+    ///
+    fn binary_operation(a: &Self::S, b: &Self::S) -> Self::S {
+        Data {
+            value: a.value + b.value,
+            size: a.size + b.size,
+        }
     }
+}
+
+#[derive(Clone)]
+enum MappingType {
+    Value(isize),
+    ID,
 }
 
 struct SumUpdate;
 
 impl MapMonoid for SumUpdate {
     type M = Sum;
-    type F = isize;
+    /// 写像の型
+    type F = MappingType;
 
+    ///
+    /// 恒等写像
+    /// 全ての`a`に対して`mapping(id, a) = a`となるもの
+    ///
     fn identity_map() -> Self::F {
-        ID
+        MappingType::ID
     }
 
-    fn mapping(&f: &Self::F, &(x, size): &<Self::M as Monoid>::S) -> <Self::M as Monoid>::S {
-        if f != ID {
-            (size as isize * f, size)
+    ///
+    /// f(x) を返す関数
+    ///
+    /// dataの値`x`に対して作用させる関数
+    ///
+    fn mapping(f: &Self::F, x: &<Self::M as Monoid>::S) -> <Self::M as Monoid>::S {
+        if let MappingType::Value(value) = f {
+            Data {
+                value: x.size as isize * value,
+                size: x.size,
+            }
         } else {
-            (x, size)
+            // f が ID ならそのまま x を返す
+            x.clone()
         }
     }
 
-    fn composition(&f: &Self::F, &g: &Self::F) -> Self::F {
-        if f == ID {
-            g
+    ///
+    /// f∘g を返す関数
+    ///
+    /// `g` がこれまでの操作、`f` が後に追加する操作で、
+    ///「その2つの操作を順に行うようなひとまとめの操作（合成写像）」を返す
+    ///
+    fn composition(f: &Self::F, g: &Self::F) -> Self::F {
+        if let MappingType::Value(_) = f {
+            // 後からの操作で上書き
+            f.clone()
         } else {
-            f
+            // f が ID ならそのまま g を返す
+            g.clone()
         }
     }
 }
@@ -54,7 +98,7 @@ fn main() {
     let (n, q) = input_tuple();
 
     // 必ずsize=1
-    let mut tree = LazySegtree::<SumUpdate>::from(vec![(0, 1); n]);
+    let mut tree = LazySegtree::<SumUpdate>::from(vec![Data { value: 0, size: 1 }; n]);
 
     for _ in 0..q {
         let (com, s, t, x) = input_query();
@@ -62,11 +106,11 @@ fn main() {
         match com {
             0 => {
                 // 入力は閉区間で渡されるので +1
-                tree.apply_range(s, t + 1, x);
+                tree.apply_range(s, t + 1, MappingType::Value(x));
             }
             _ => {
                 // 入力は閉区間で渡されるので +1
-                println!("{}", tree.prod(s, t + 1).0);
+                println!("{}", tree.prod(s, t + 1).value);
             }
         }
     }

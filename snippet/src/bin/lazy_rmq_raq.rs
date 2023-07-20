@@ -11,16 +11,32 @@ struct MinAdd;
 
 impl MapMonoid for MinAdd {
     type M = Min<isize>;
+    /// 写像の型
     type F = isize;
 
+    ///
+    /// 恒等写像
+    /// 全ての`a`に対して`mapping(id, a) = a`となるもの
+    ///
     fn identity_map() -> Self::F {
         0
     }
 
+    ///
+    /// f(x) を返す関数
+    ///
+    /// dataの値`x`に対して作用させる関数
+    ///
     fn mapping(&f: &Self::F, &x: &Self::F) -> Self::F {
         f + x
     }
 
+    ///
+    /// f∘g を返す関数
+    ///
+    /// `g` がこれまでの操作、`f` が後に追加する操作で、
+    ///「その2つの操作を順に行うようなひとまとめの操作（合成写像）」を返す
+    ///
     fn composition(&f: &Self::F, &g: &Self::F) -> Self::F {
         f + g
     }
