@@ -27,7 +27,7 @@ impl MapMonoid for MinAdd {
     ///
     /// dataの値`x`に対して作用させる関数
     ///
-    fn mapping(&f: &Self::F, &x: &Self::F) -> Self::F {
+    fn mapping(&f: &Self::F, &x: &<Self::M as Monoid>::S) -> <Self::M as Monoid>::S {
         f + x
     }
 
