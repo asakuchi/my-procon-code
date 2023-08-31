@@ -1,3 +1,8 @@
+//!
+//! フェニック木
+//! Binary Indexed Tree (BIT)
+//!
+
 use ac_library_rs::FenwickTree;
 use proconio::input;
 
